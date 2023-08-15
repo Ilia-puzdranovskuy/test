@@ -1,0 +1,58 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Віньковецький комунсервіс</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" >
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+<link href="/style/main.css" rel="stylesheet" type="text/css">
+<body cla>
+    <header>
+        <%- include('../partials/header'); %>
+    </header>
+    <main>
+        <div class=" persAc-main-container">
+            <nav class="navbar navbar-light bg-light persAc-navbar">
+                <div></div>
+                <form class="form-inline">
+                  <a href="/personal-account"><button class="btn btn-primary btn-pers-Ac-navbar" type="button"><img class="persAc-navbar-icon" src="/images/home.png">Головна</button></a>
+                  <a href="/personal-account/readings"><button class="btn btn-primary btn-pers-Ac-navbar" type="button"><img class="persAc-navbar-icon" src="/images/plumbing.png">Показання</button></a>
+                  <a href=""><button class="btn btn-primary btn-pers-Ac-navbar" type="button"><img class="persAc-navbar-icon" src="/images/payments.png">Розрахунок</button></a>
+                  <a href=""><button class="btn btn-primary btn-pers-Ac-navbar" type="button"><img class="persAc-navbar-icon" src="/images/statistic.png">Статистика</button></a>
+                  <a href="/personal-account/add-persAc"><button class="btn btn-primary btn-pers-Ac-navbar" type="button"><img class="persAc-navbar-icon" src="/images/plus.png">Додати рахунок</button></a>
+                </form>
+              </nav>
+            <div class="persAc-main-sec-container">
+                <div class="persAc-th-cont persAc-th-cont-main w-100" >
+                    <div class="th-cont-title" >Додавання особового рахунку</div>
+                    <div class="th-cont-body pers_ac_inf_block">
+                        <form method="post" action="/personal-account/add-persAcWeb">
+                            <input type="text" class="form-control" placeholder="Особовий рахунок"   id="personalAccount" name="personalAccount" required><br>
+                            <select class="form-select" id="settlement" name="settlement" required>
+                                <option selected value="">Населений пункт</option>
+                                <option value="Віньківці">Віньківці</option>
+                                <option value="Карижин">Карижин</option>
+                                <option value="Подолянське">Подолянське</option>
+                              </select><br>
+                              <p style="color: red;"><%=errors%></p>
+                              <button type="submit" class="btn form-btn" >Додати</button>
+                        </form>
+                    </div>
+                 </div>
+   
+        </div>
+    </main>
+
+    <footer >
+        <div style="position: absolute;bottom: 0;" class="w-100">
+            <%- include('../partials/footer'); %>
+        </div>
+    </footer>
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js">
+	</script> 
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js">
+	</script>
+    <script src="scripts/persAc.js"></script>
+
+</body>

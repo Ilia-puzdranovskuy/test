@@ -1,0 +1,189 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Адмін панель</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="/admin/style/style.css" rel="stylesheet" type="text/css">
+<body class="bg-light d-flex">
+    <%- include('../admin_partials/panelNav'); %>
+    <main class="">
+      <form action="/admin-panel-controll/new-pers-account" method="post">
+        <input style="visibility: hidden;" type="text" required name="personal_account_id"  value="<%= Number(newPersAcID)+1%>">
+        <div>
+          <div class="w-100 "><h2 class="text-center">Створення нового особового рахунку</h2></div>
+          <div class="block-bg mw-100">
+            <div class="p-1 text-danger"><h5>Інформація про новий особовий рахунок</h5></div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Номер<br>особ.рах</th>
+                  <th>Вулиця</th>
+                  <th>Будинок</th>
+                  <th>Квартира</th>
+                  <th>Населений пункт</th>
+                  <th>Дата<br>поч.обсл(р-м-д)</th>
+                  <th>Пільга</th>
+                  <th>Тип</th>
+                  <th>Кількість<br>людей</th>
+                  <th>Послуги</th>
+                  <th>Постачальник<br> послуг</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                <td><input class="sm_input" type="text" required name="personal_account_num" placeholder="Номер особ.рах" value="<%= Number(newPersAcNum)+1%>"></td>
+                <td><input type="text" required name="street" placeholder="Вулиця" value=""></td>
+                <td><input class="sm_input" type="text" required name="house" placeholder="Будинок" value=""></td>
+                <td><input class="sm_input" type="text" required name="apartment" placeholder="Квартира" value="0"></td>
+                <td>
+                  <select   name="settlement" required>
+                    <option selected value="">Населений пункт</option>
+                    <option value="Віньківці">Віньківці</option>
+                    <option value="Карижин">Карижин</option>
+                    <option value="Подолянське">Подолянське</option>
+                  </select>
+                </td>
+                <td><input style="width: 100px;" type="text" required name="date_work_from" placeholder="Дата поч.обсл(р-м-д)" value="<%= moment( new Date() ).format("YYYY-MM-D")%>"></td>
+                <td><input id="privil-check" type="checkbox"  name="privilege"></td>
+                <td>
+                  <select   name="type" required>
+                    <option selected value="">Тип</option>
+                    <option value="1">Юридичний</option>
+                    <option value="2">ФОП</option>
+                  </select>
+                </td>
+                <td><input class="sm_input" type="number" placeholder="Кільк.людей" required name="num_of_people"></td>
+                <td>
+                  <select   name="services" required multiple>
+                    <option value="Водопостачання">Водопостачання</option>
+                    <option value="Водовідведення">Водовідведення</option>
+                    <option value="Вивізсміття">Вивізсміття</option>
+                  </select>
+                </td>
+                <td><input class="lg-input" type="text" required name="service_provader" placeholder="Постачальник послуг" value="КП «Віньковецький комунсервіс»"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+   
+        <div>
+          <div class="block-bg">
+            <div class="p-1 text-danger"><h5>Інформація про нового контрагента</h5></div>
+            <table>
+              <thead>
+                <tr>
+                  <th>П.І.Б</th>
+                  <th>Дата народження<br>(р-м-д)</th>
+                  <th>Індифікаційний<br>код</th>
+                  <th>Дата cтворення<br>угоди (р-м-д)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <td><input class="lg-input" type="text" required name="full_name" placeholder="П.І.Б" value=""></td>
+                <td><input style="width: 100px;" type="text" required name="birth_date" placeholder="Дата наародження(р-м-д)" value=""></td>
+                <td><input  type="text" required name="indificate_code" placeholder="Індифікаційний код" value=""></td>
+                <td><input style="width: 100px;" type="text" required name="creat_date" placeholder="Дата cтворення (р-м-д)" value="<%= moment( new Date() ).format("YYYY-MM-D")%>"></td>
+             
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div id="privil-block" style="display: none;">
+          <div class="block-bg">
+            <div class="p-1 text-danger"><h5>Інформація про пільговика</h5></div>
+            <table>
+              <thead>
+                <tr>
+                  <th>П.І.Б пільговика</th>
+                  <th>Індифікаційний код</th>
+                  <th>Тип пільги</th>
+                  <th>Тип документа</th>
+                  <th>Номер документа</th>
+                  <th>Дата діє з (р-м-д)</th>
+                </tr>
+                </thead>
+                <tbody>
+                  <td><input class="lg-input" type="text"  name="full_name_privilig" placeholder="П.І.Б" value=""></td>
+                  <td><input  type="text"  name="indificate_code_privilig" placeholder="Індифікаційний код" value=""></td>
+                  <td><select class="lg-input" name="code_privilig" >
+                    <option  value='35'>35-Багатодітна сім'я</option>
+                    <option value='87'>87-Батьки загиблого військовослужбовця</option>
+                    <option value='22'>22-Батьки померлої особи з особливими заслугами перед Батьківщиною</option>
+                    <option value='32'>32-Батьки померлої особи з особливими трудовими заслугами перед Батьківщиною</option>
+                    <option value='92'>92-Батьки та члени сім'ї працівника служби цивільного захисту, який загинув (помер) або пропав безвісти</option>
+                    <option value='46'>46-Вдова (вдівець) ветеран податкової міліції</option>
+                    <option value='81'>81-Вдова (вдівець) ветерана військової служби</option>
+                    <option value='44'>44-Вдова (вдівець) ветерана Державної кримінально-виконавчої служби</option>
+                    <option value='99'>99-Вдова (вдівець) ветерана державної пожежної охорони</option>
+                    <option value='131'>131-Вдова (вдівець) ветерана Державної служби спеціального зв'язку та захисту інформації України</option>
+                    <option value='91'>91-Вдова (вдівець) ветерана Національної поліції</option>
+                    <option value='91'>91-Вдова (вдівець) ветерана органів внутрішніх справ</option>
+                    <option value='38'>38-Вдова (вдівець) ветерана служби цивільного захисту</option>
+                    <option value='85'>85-Вдова (вдівець) військовослужбовця, її (його) діти</option>
+                    <option value='23'>23-Вдова (вдівець) особи з особливими заслугами перед Батьківщиною</option>
+                    <option value='26'>26-Вдова (вдівець) особи з особливими трудовими заслугами перед Батьківщиною</option>
+                    <option value='80'>80-Ветеран військової служби</option>
+                    <option value='39'>39-Ветеран Державної кримінально-виконавчої служби</option>
+                    <option value='98'>98-Ветеран державної пожежної охорони</option>
+                    <option value='130'>130-Ветеран Державної служби спеціального зв'язку та захисту інформації України</option>
+                    <option value='90'>90-Ветеран Національної поліції</option>
+                    <option value='90'>90-Ветеран органів внутрішніх справ</option>
+                    <option value='45'>45-Ветеран податкової міліції</option>
+                    <option value='37'>37-Ветеран служби цивільного захисту</option>
+                    <option value='58'>58-Військовослужбовець СБУ на пенсії</option>
+                    <option value='69'>69-Дитина (ЧАЕС) з інвалідністю</option>
+                    <option value='54'>54-Дитячий будинок сімейного типу</option>
+                    <option value='15'>15-Діти війни</option>
+                    <option value='66'>66-Дружина (чоловік) (ЧАЕС) померлого громадянина (1 категорія)</option>
+                    <option value='16'>16-Дружина (чоловік) (ЧАЕС) померлого громадянина (2 категорія)</option>
+                    <option value='17'>17-Дружина (чоловік) (ЧАЕС) померлого громадянина (3 категорія)</option>
+                    <option value='86'>86-Дружина (чоловік) військовослужбовця, який пропав безвісти, її (його) діти</option>
+                    <option value='120'>120-Жертви нацистських переслідувань (стаття 61)</option>
+                    <option value='122'>122-Жертви нацистських переслідувань (стаття 62) - особи з інвалідністю 2 гр.</option>
+                    <option value='121'>121-Жертви нацистських переслідувань (стаття 62) – особи з інвалідністю 1 гр.</option>
+                    <option value='123'>123-Жертви нацистських переслідувань (стаття 62) – особи з інвалідністю 3 гр.</option>
+                    <option value='124'>124-Жертви нацистських переслідувань (стаття 63)</option>
+                    <option value='125'>125-Жертви нацистських переслідувань (стаття 64)</option>
+                    <option value='60'>60-Опікун дітей померлого громадянина, смерть якого пов'язана з ЧАЕС (1 категорія)</option>
+                    <option value='18'>18-Опікун дітей померлого громадянина, смерть якого пов'язана з ЧАЕС (2 категорія)</option>
+                    <option value='19'>19-Опікун дітей померлого громадянина, смерть якого пов'язана з ЧАЕС (3 категорія)</option>
+                    <option value='11'>11-Особа з інвалідністю внаслідок війни 1 групи</option>
+                    <option value='12'>12-Особа з інвалідністю внаслідок війни 2 групи</option>
+                    <option value='13'>13-Особа з інвалідністю внаслідок війни 3 групи</option>
+                    <option value='88'>88-Особа з інвалідністю, інвалідність якої настала внаслідок захворювання, одержаного в період проходження військової служби</option>
+                    <option value='20'>20-Особа з особливими заслугами перед Батьківщиною</option>
+                    <option value='30'>30-Особа з особливими трудовими заслугами перед Батьківщиною</option>
+                    <option value='61'>61-Особа ЧАЕС – 1 категорія</option>
+                    <option value='62'>62-Особа ЧАЕС – 2 категорія – ліквідатор</option>
+                    <option value='63'>63-Особа ЧАЕС – 2 категорія – потерпілий</option>
+                    <option value='93'>93-Працівник служби цивільного захисту на пенсії</option>
+                    <option value='55'>55-Прийомна сім'я</option>
+                    <option value='100'>100-Реабілітована особа з інвалідністю внаслідок репресій або є пенсіонером</option>
+                    <option value='11-13'>11-13-Реабілітована особа із числа таких осіб, яким встановлено інвалідність</option>
+                    <option value='1'>1-Реабілітована особа із числа тих, яких було піддано репресіям у формі (формах) позбавлення волі (ув’язнення) або обмеження волі чи примусового безпідставного поміщення здорової людини до психіатричного закладу (стаття 6)</option>
+                    <option value='56'>56-Сім'я опікуна (піклувальника)</option>
+                    <option value='1'>1-Учасник бойових дій</option>
+                    <option value='1'>1-Учасник бойових дій, в т.ч. яким виповнилося 85 років</option>
+                    <option value='2'>2-Учасник війни</option>
+                    <option value='3'>3-Член сім'ї загиблого (померлого) ветерана війни</option>
+                    <option value='3'>3-Член сім'ї загиблого (померлого) ветерана війни з числа учасників антитерористичної операції та Революція Гідності</option>
+                  </select></td>
+                <td><input  type="text"  name="type_document_privilig" placeholder="Тип документа" value=""></td>
+                <td><input  type="text"  name="number_of_document_privilig" placeholder="Номер документа" value=""></td>
+                <td><input style="width: 100px;" type="text"  name="date_from_privilig" placeholder="Дата діє з (р-м-д)" value=""></td>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-warning">Створити</button>
+      </form>
+
+
+
+    </main>
+    
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> 
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/admin/js/scripts.js"></script>
+</body>

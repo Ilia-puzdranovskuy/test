@@ -1,0 +1,195 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Адмін панель</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="/admin/style/style.css" rel="stylesheet" type="text/css">
+<body class="bg-light d-flex">
+    <%- include('../admin_partials/panelNav'); %>
+    <main class="">
+      <div class="p-1 text-danger"><h5>Показники особового рахунку <span  style="text-decoration: underline;"><%= meters[0].personal_account%> <%= meters[0].full_name%></span></h5><h5 style="color: blue;"><%= errors%></h5></div>
+      <div class="block-bg mw-100">
+        <div class="p-1 text-danger"><h5>Лічильники</h5></div>
+        <table class="search-result-table">
+          <thead>
+            <tr>
+              <th>Особовий рахунок</th>
+              <th>П.І.Б</th>
+              <th>Вулиця</th>
+              <th>Будинок</th>
+              <th>Квартира</th>
+              <th>Н.П.</th>
+              <th>Марка</th>
+              <th>Локація</th>
+              <th>Статус</th>
+              <th>Серійн.ном</th>
+              <th>Останій.показ</th>
+              <th>Дата.ост.показ</th>
+              <th>Новий показник</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for(var i=0; i < meters.length; i++) { %>
+              <tr>
+
+                  <% if(meters[i].personal_account != undefined){ %>
+                    <td><%= meters[i].personal_account%></td>
+                  <% }else{ %>
+                    <td>Невідомо</td>
+                  <% } %>
+
+                  <% if(meters[i].full_name!= undefined){ %>
+                    <td><%= meters[i].full_name%></td>
+                  <% }else{ %>
+                    <td>Невідомо</td>
+                  <% } %>
+
+                  <% if(meters[i].street != undefined){ %>
+                    <td><%= meters[i].street%></td>
+                  <% }else{ %>
+                    <td>Невідомо</td>
+                  <% } %>
+
+                  <% if(meters[i].house != undefined){ %>
+                    <td><%= meters[i].house%></td>
+                  <% }else{ %>
+                    <td>Невідомо</td>
+                  <% } %>
+
+                  <% if(meters[i].apartment != undefined){ %>
+                    <td><%= meters[i].apartment%></td>
+                  <% }else{ %>
+                    <td>Невідомо</td>
+                  <% } %>
+
+                  <% if(meters[i].settlement != undefined){ %>
+                    <td><%= meters[i].settlement%></td>
+                  <% }else{ %>
+                    <td>Невідомо</td>
+                  <% } %>
+
+                  <% if(meters[i].brand != undefined){ %>
+                    <td><%= meters[i].brand%></td>
+                  <% }else{ %>
+                    <td>Невідомо</td>
+                  <% } %>
+
+                  <% if(meters[i].location != undefined){ %>
+                    <td><%= meters[i].location%></td>
+                  <% }else{ %>
+                    <td>Невідомо</td>
+                  <% } %>
+
+                  <% if(meters[i].status != undefined){ %>
+                    <td><%= meters[i].status%></td>
+                  <% }else{ %>
+                    <td>Невідомо</td>
+                  <% } %>
+
+                  <% if(meters[i].serial_number != undefined){ %>
+                    <td><%= meters[i].serial_number%></td>
+                  <% }else{ %>
+                    <td>Невідомо</td>
+                  <% } %>
+
+                  <% if(meters[i].last_readinng != undefined){ %>
+                    <td><%= meters[i].last_readinng%></td>
+                  <% }else{ %>
+                    <td>Невідомо</td>
+                  <% } %>
+                  
+                  <% if(meters[i].last_readinng != undefined){ %>
+                    <td><%=moment(  meters[i].last_readinng_date).format("YYYY-MM-D")%></td>
+                  <% }else{ %>
+                    <td>Невідомо</td>
+                  <% } %>
+                  <td>
+                    <form method="post" action="/admin-panel-controll/new-reading?meterId=<%=meters[i].id_meters%>">
+                      <input placeholder="Показник"  required name="reading" type="number" step=".01" style="width: 100px;">
+                      <input placeholder="Дату подання (р-м-д)"  required name="readingDate" value="<%=moment(  new Date()).format("YYYY-MM-D")%>" type="text" style="width: 100px;">
+                      <button type="submit">Зберегти</button>
+                    </form>
+                  </td>
+              </tr>
+          <% } %>
+          </tbody>
+        </table>
+      </div>
+      <div class="block-bg mw-100">
+        <div class="p-1 text-danger"><h5>Минулі показники</h5></div>
+                <div  id="table-wrapper">
+                    <div id="table-scroll">
+                        <table class="w-100 search-result-table" >
+                            <tr>
+                            <th>Послуга</th>
+                            <th>Cерійний № лічильника</th>
+                            <th>Розташування</th>
+                            <th>Показання</th>
+                            <th>Дата</th>
+                            <th>Дата нарах.</th>
+                            <th>Джерело</th>
+                            <th></th>
+                            </tr>
+                                <% for(var i=0; i < readings.length; i++) { %>
+                                    <tr>
+
+                                        <% if(readings[i].service != undefined){ %>
+                                            <td><%= readings[i].service%></td>
+                                        <% }else{ %>
+                                            <td>Невідомо</td>
+                                        <% } %>
+
+                                        <% if(readings[i].serial_number != undefined){ %>
+                                            <td><%= readings[i].serial_number%></td>
+                                        <% }else{ %>
+                                            <td>Невідомо</td>
+                                        <% } %>
+
+                                        <% if(readings[i].location != undefined){ %>
+                                            <td><%= readings[i].location%></td>
+                                        <% }else{ %>
+                                            <td>Невідомо</td>
+                                        <% } %>
+
+                                        <% if(readings[i].reading != undefined){ %>
+                                            <td><%= readings[i].reading%></td>
+                                        <% }else{ %>
+                                            <td>Невідомо</td>
+                                        <% } %>
+                                        
+                                        <% if(readings[i].reading_date != undefined){ %>
+                                            <td><%= moment(readings[i].reading_date ).format("YYYY-MM-D")%></td>
+                                        <% }else{ %>
+                                            <td>Невідомо</td>
+                                        <% } %>
+
+                                      <% if(readings[i].calculated_date != undefined){ %>
+                                          <td style="background-color: green;"><%= moment(readings[i].calculated_date ).format("YYYY-MM-D")%></td>
+                                      <% }else{ %>
+                                          <td>Невідомо</td>
+                                      <% } %>
+                                        
+                                        <% if(readings[i].source != undefined){ %>
+                                            <td><%= readings[i].source%></td>
+                                        <% }else{ %>
+                                            <td>Невідомо</td>
+                                        <% } %>
+                                        <td style="width: 100px;">
+                                          <form  onsubmit="return confirm('Ви впевнені, що хочете видалити показник?')" method="post" action="/admin-panel-controll/delete-reading?readingId=<%=readings[i].id_reading%>&meterId=<%=readings[i].id_meters%>">
+                                            <button type="submit" class="btn btn-danger">Видалити</button>
+                                          </form>
+                                        </td>
+                                    </tr>
+                                <% } %>
+                            
+                        </table>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    </main>
+    
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> 
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/admin/js/scripts.js"></script>
+</body>

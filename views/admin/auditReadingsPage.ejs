@@ -1,0 +1,126 @@
+
+<html style="font-family: PTSans;">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Адмін панель</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="/admin/style/style.css" rel="stylesheet" type="text/css">
+<body  class="bg-light d-flex">
+    <%- include('../admin_partials/panelNav'); %>
+    <main class="">
+      <div class="p-1 text-danger"><h5>Звірки по показникам</h5><h5 style="color: blue;"><%= errors%></h5></div>
+      <div class="block-bg mw-100">
+        <form method="post" action="/admin-panel-controll/audit-readings-post">
+          <div class="mb-3">
+            <label for="dateFrom" class="form-label">Виберіть дату з:</label>
+            <input type="date" class="form-control" id="dateFrom" name="dateFrom" required>
+            <label for="dateTo" class="form-label">Виберіть дату по:</label>
+            <input type="date" class="form-control" id="dateTo" name="dateTo" required>
+          </div>
+          <div class="mb-3">
+            <label for="way" class="form-label">Джерело:</label>
+            <select class="form-select" id="way" name="way" aria-label="Default select example" required>
+              <option selected value="all">Усі</option>
+              <option value="Адмістратори">Адмістратори</option>
+              <option value="Teлеграм">Teлеграм</option>
+              <option value="Сайт">Сайт</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="water_well" class="form-label">Скважина:</label>
+            <select class="form-select" id="water_well" name="waterWell" aria-label="Default select example" required>
+              <option selected value="all">Усі</option>
+              <option  value="Віньківці">Віньківці</option>
+              <option  value=""></option>
+              <option  value=""></option>
+              <option  value="Лілія">Лілія</option>
+              <option  value="Березина">Березина</option>
+              <option  value="Подолянське">Подолянське</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Створити</button>
+          
+          
+        </form>
+        <button  class="btn btn-primary" onclick="getAuditToPdfReadings()">Звіт в PDF</button>
+      </div>
+      <div class="block-bg mw-100" id="auditPDf">
+        <div class="p-1 text-danger"><h5 id="nameFile">Звірка по показникам: <%= info %></h5></div>
+                <div  id="table-wrapper">
+                    <div id="table-scroll">
+                        <table class="w-100 search-result-table" >
+                          <thead>
+                            <tr>
+                              <th>Особ.рах</th>
+                              <th>Показник</th>
+                              <th>Джерело</th>
+                              <th>Дата</th>
+                              <th>Скважина</th>
+                            </tr>
+                          </thead>
+                          <tbody id="tblbody">
+                            <% for(var i=0; i < payments.length; i++) { %>
+                              <tr>
+                                <% if(payments[i].personal_account != undefined){ %>
+                                  <td><%= payments[i].personal_account %></td>
+                                <% }else{ %>
+                                  <td>Невідомо</td>
+                                <% } %>
+                
+                                <% if(payments[i].reading != undefined){ %>
+                                  <td><%= payments[i].reading %></td>
+                                <% }else{ %>
+                                  <td>Невідомо</td>
+                                <% } %>
+                
+                                <% if(payments[i].source != undefined){ %>
+                                  <td><%= payments[i].source%></td>
+                                <% }else{ %>
+                                  <td>Невідомо</td>
+                                <% } %>
+                
+                                <% if(payments[i].reading_date != undefined){ %>
+                                  <td><%=moment(  payments[i].reading_date).format("YYYY-MM-D")%></td>
+                                <% }else{ %>
+                                  <td>Невідомо</td>
+                                <% } %>
+                
+                                <% if(payments[i].water_well != undefined){ %>
+                                  <td><%= payments[i].water_well %></td>
+                                <% }else{ %>
+                                  <td>Невідомо</td>
+                                <% } %>
+        
+                              </tr>
+                            <% } %>
+
+                            <% if(sum!= undefined){ %>
+                              <tr>
+                                <td style="font-weight: 700;">Загальна кількість:</td>
+                                <td style="font-weight: 700;"><%= sum %></td>
+                                <td ></td>
+                                <td ></td>
+                                <td ></td>
+                              </tr>
+                            <% } %>
+
+                          </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    </main>
+    
+    <script src='https://cdn.jsdelivr.net/npm/pdfmake@latest/build/pdfmake.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/pdfmake@latest/build/vfs_fonts.min.js'></script>
+    <!-- html-to-pdfmake file: -->
+    <script src="https://cdn.jsdelivr.net/npm/html-to-pdfmake/browser.js"></script>
+    <script src="/admin/js/audit.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> 
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/admin/js/scripts.js"></script>
+
+</body>
+</html>

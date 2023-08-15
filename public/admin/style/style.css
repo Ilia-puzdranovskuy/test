@@ -1,0 +1,86 @@
+main{
+    width: 90%;
+    padding: 10px;
+}
+
+.nav-admin-panel{
+    width: 10%;
+}
+.nav-admin-panel div{
+    margin-top: 5%;
+}
+.nav-admin-panel div button{
+    width: 100%;
+}
+.block-bg{
+    width: 100%;
+    padding: 10px;
+    background-color: rgba(0, 0, 0,0.1);
+    margin: 10px 0;
+}
+table{
+    max-width: 100%;
+}
+
+th{
+    padding: 4px;
+    border: 1px solid black;
+    text-align: center;
+}
+
+td{
+    padding: 4px;
+    border: 1px solid black;
+    text-align: center;
+}
+
+.sm_input{
+    width: 80px;
+}
+
+input[type='checkbox'] {
+    width: 25px;
+    height: 25px;
+}
+
+.lg-input{
+    width: 300px;
+}
+
+
+.search-result-table tbody tr:nth-child(odd) td{
+    background-color: rgba(0, 0, 0, 0.15);;
+
+  }
+
+  #table-wrapper {
+    position:relative;
+  }
+  #table-scroll {
+    height:50vh;
+    overflow:auto;  
+    margin-top:20px;
+  }
+  .table-wrapper {
+    position:relative;
+  }
+  .table-scroll {
+    height:20vh;
+    overflow:auto;  
+    margin-top:20px;
+  }
+
+
+  #table-scroll-serch {
+    height:70vh;
+    overflow:auto;  
+    margin-top:20px;
+  }
+  #table-wrapper table {
+    width:100%;
+  
+  }
+
+  .smalInputTable input{
+    width: 100px;
+  }

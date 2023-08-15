@@ -1,0 +1,135 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Адмін панель</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="/admin/style/style.css" rel="stylesheet" type="text/css">
+<body class="bg-light d-flex">
+    <%- include('../admin_partials/panelNav'); %>
+    <main class="">
+      <div class="p-1 text-danger"><h5>Пломби <h5 style="color: blue;"><%= errors%></h5></div>
+      <div class="block-bg mw-100">
+        <div class="p-1 text-danger"><h5>Пломби</h5></div>
+        <% for(var i=0; i < seals.length; i++) { %>
+        <div class="d-flex align-items-end">
+        <form method="post" action="/admin-panel-controll/change-seal?sealId=<%=seals[i].id_seals%>">
+        <table class="search-result-table smalInputTable" style="margin-top: 20px;" >
+          <thead>
+            <tr>
+              <th>Марка ліч.</th>
+              <th>Серійн.ном ліч.</th>
+              <th>Локація ліч.</th>
+              <th>Марка пломби</th>
+              <th>Серійн.ном.<br>  пломби</th>
+              <th>Дата встановлення<br>(р-м-д)</th>
+              <th>Дата зняття<br> (р-м-д)</th>
+              <th>Створив</th>
+              <th>Змінив</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr>
+                  <% if(seals[i].brand != undefined){ %>
+                    <td> <%= seals[i].brand%></td>
+                  <% }else{ %>
+                    <td>Невідомо</td>
+                  <% } %>
+
+                  <% if(seals[i].serial_number != undefined){ %>
+                    <td> <%= seals[i].serial_number%></td>
+                  <% }else{ %>
+                    <td>Невідомо</td>
+                  <% } %>
+
+                  <% if(seals[i].location != undefined){ %>
+                    <td> <%= seals[i].location%></td>
+                  <% }else{ %>
+                    <td>Невідомо</td>
+                  <% } %>
+
+                  <% if(seals[i].brand_seal != undefined){ %>
+                    <td> <input type="text" name="brandSeal" value="<%= seals[i].brand_seal%>"></td>
+                  <% }else{ %>
+                    <td><input type="text" name="brandSeal" value=""></td>
+                  <% } %>
+
+                  <% if(seals[i].serial_number_seal != undefined){ %>
+                    <td> <input type="text" name="serialNumSeal" value="<%= seals[i].serial_number_seal%>"></td>
+                  <% }else{ %>
+                    <td><input type="text" name="serialNumSeal" value=""></td>
+                  <% } %>
+
+                  
+                  <% if(seals[i].installation_date != undefined){ %>
+                    <td> <input type="text" name="dateInstalSeal" value="<%=moment(  seals[i].installation_date).format("YYYY-MM-D")%>"></td>
+                  <% }else{ %>
+                    <td><input type="text" name="dateInstalSeal" value=""></td>
+                  <% } %>
+
+                  <% if(seals[i].date_of_withdrawal != undefined){ %>
+                    <td> <input type="text" name="dateDeInstalSeal" value="<%=moment(  seals[i].date_of_withdrawal).format("YYYY-MM-D")%>"></td>
+                  <% }else{ %>
+                    <td><input type="text" name="dateDeInstalSeal" value=""></td>
+                  <% } %>
+
+                  <% if(seals[i].author_create != undefined){ %>
+                    <td> <%= seals[i].author_create%></td>
+                  <% }else{ %>
+                    <td>Невідомо</td>
+                  <% } %>
+
+                  <% if(seals[i].author_change != undefined){ %>
+                    <td> <%= seals[i].author_change%></td>
+                  <% }else{ %>
+                    <td>Невідомо</td>
+                  <% } %>
+
+                  <td><button type="submit" class="btn btn-dark">Змінити</button></td>
+
+              </tr>
+          
+          </tbody>
+        </table>
+      </form>
+      <form class="deleteMeter" onsubmit="return confirm('Ви впевнені, що хочете видалити пломбу?')" method="post" action="/admin-panel-controll/delete-seal?sealId=<%=seals[i].id_seals%>">
+        <button type="submit" class="btn btn-danger">Видалити</button>
+      </form>
+    </div>
+        <% } %>
+      </div>
+      
+    </div>
+
+    <div class="block-bg mw-100">
+      <div class="p-1 text-danger"><h5>Нова пломба</h5></div>
+      <form method="post" action="/admin-panel-controll/new-seal?meterId=<%=meter%>&persAc=<%=persAc%>">
+      <table class="search-result-table smalInputTable" style="margin-top: 20px;">
+        <thead>
+          <tr>
+            <th>Марка пломби</th>
+            <th>Серійн.ном.<br>  пломби</th>
+            <th>Дата встановлення<br>(р-м-д)</th>
+            <th>Дата зняття<br> (р-м-д)</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr>
+              <td><input type="text" name="brandSeal" value=""></td>
+              <td><input type="text" name="serialNumSeal" value=""></td>
+              <td><input type="text" name="dateInstalSeal" value=""></td>
+              <td><input type="text" name="dateDeInstalSeal" value=""></td>
+              <td><button type="submit" class="btn btn-dark">Зберегти</button></td>
+            </tr>
+        </tbody>
+      </table>
+    </form>
+    </div>
+    
+  </div>
+    </main>
+    
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> 
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/admin/js/scripts.js"></script>
+</body>

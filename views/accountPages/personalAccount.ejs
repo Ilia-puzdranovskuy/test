@@ -1,0 +1,125 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Віньковецький комунсервіс</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" >
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+<link href="/style/main.css" rel="stylesheet" type="text/css">
+<body cla>
+    <header>
+        <%- include('../partials/header'); %>
+    </header>
+    <main>
+        <div class=" persAc-main-container">
+            <%-  include('../partials/persAcountNav'); %>
+            <div class="persAc-main-sec-container">
+                <div class="persAc-th-cont persAc-th-cont-main ">
+                    <div class="th-cont-title">Особовий рахунок</div>
+                    <div class="th-cont-body pers_ac_inf_block">
+                        <% let curentArrInf;
+                            for (let i = 0; i < homeAllInf.length; i++) {
+                                const element = homeAllInf[i];
+                                if(element.personal_account ==param){
+                                    curentArrInf=element
+                                }
+                            } 
+                        %>
+                        
+                        <% if(curentArrInf != undefined){ %>
+                           <p>Особовий рахунок №: <span><%= curentArrInf.personal_account%></span></p>
+                            <% if(curentArrInf.apartment == "0"){ %>
+                                <p>Адреса: <span><%= curentArrInf.settlement+', вул.'+curentArrInf.street+', буд.'+curentArrInf.house%></span></p>
+                            <% }else{ %>
+                                <p >Адреса: <span><%= curentArrInf.settlement+', вул.'+curentArrInf.street+', буд.'+curentArrInf.house+', кв.'+curentArrInf.apartment %></span></p>
+                            <% } %>
+                            <p>Власник рахунку: <span><%= curentArrInf.full_name%></span></p>
+                            <% if(curentArrInf.privilege == "0"){ %>
+                                <p>Пільги: <span>Немає</span></p>
+                            <% }else{ %>
+                                <p >Пільги: <span>Є</span> </p>
+                            <% } %>
+                            <p>Надавач послуг: <span><%= curentArrInf.serviceProvider%></span></p>
+                         <% }%>
+                    </div>
+                </div>
+                <div class="persAc-th-cont persAc-th-cont-sec">
+                    <div class="th-cont-title">Поточний баланс</div>
+                    <div class="th-cont-body">
+                        <% if(curentArrInf.balance < 0){ %>
+                                <p class="balance_st" style="color: red;">Забогованість</p>
+                                <p class="balance" style="color: red;"><%= curentArrInf.balance%> грн</p>
+                            <% }else{ %>
+                                <p class="balance_st" style="color: rgb(76, 185, 76);">Переплата</p>
+                                <p class="balance" style="color: rgb(76, 185, 76);"><%= curentArrInf.balance%> грн</p>
+                        <% } %>
+                        
+
+                    </div>
+                </div>
+            </div>
+            <div class="persAc-main-sec-container">
+                <div class="persAc-th-cont persAc-th-cont-main ">
+                    <div class="th-cont-title">Повідомлення</div>
+                    <% if(news.length == 0){ %>
+                        <div class="th-cont-body">
+                            <p >Актуальних новин поки що немає</p>
+                        </div>
+                    <% }else{ %>
+                        <% for(var i=0; i < news.length; i++) { %>
+                            <div class="th-cont-body">
+                                <h5><%= news[i].header%></h5>
+                                <p><pre><%= news[i].body%></pre></p>
+                            </div>
+                         <% } %>
+                     <% } %>
+                </div>
+                <div class="persAc-th-cont persAc-th-cont-sec">
+                    <div class="th-cont-title">Діючі тарифи</div>
+                    <% if(curentArrInf.services== undefined || JSON.parse(curentArrInf.services).length == 0){ %>
+                        <div class="th-cont-body">
+                            <p >Вибачте даних про тарифи для вас поки відсутні</p>
+                        </div>
+                    <% }else{ %>
+                        <% let paserJson = JSON.parse(curentArrInf.services)  %>
+                        <% if(typeof paserJson =="string"&& paserJson == "Вивізсміття"){ %>
+                            <div class="tarifs-block"><span>Вивізсміття:</span><span class="tarif-num"><%= curentArrInf.rubbish%> грн/люд</span></div>
+                        <% } %>
+                        <% if(typeof paserJson =="string"&& paserJson == "Водопостачання"){ %>
+                            <div class="tarifs-block"><span>Водопостачання:</span><span class="tarif-num"><%= curentArrInf.water%> грн/м<sup>3</sup></span></div>
+                        <% } %>
+                        <% if(typeof paserJson =="string"&& paserJson == "Водовідведення"){ %>
+                            <div class="tarifs-block"><span>Водовідведення:</span><span class="tarif-num"><%= curentArrInf.drainage%> грн/м<sup>3</sup></span></div>
+                        <% } %>
+                            <% for(var i=0; i < paserJson.length; i++) { %>
+                                <% if(paserJson[i] == "Водопостачання"){ %>
+                                    <div class="tarifs-block"><span>Водопостачання:</span><span class="tarif-num"><%= curentArrInf.water%> грн/м<sup>3</sup></span></div>
+                                <% } %>
+                                <% if(paserJson[i] == "Водовідведення"){ %>
+                                    <div class="tarifs-block"><span>Водовідведення:</span><span class="tarif-num"><%= curentArrInf.drainage%> грн/м<sup>3</sup></span></div>
+                                <% } %>
+                                <% if(paserJson[i] == "Вивізсміття"){ %>
+                                    <div class="tarifs-block"><span>Вивізсміття:</span><span class="tarif-num"><%= curentArrInf.rubbish%> грн/люд</span></div>
+                                <% } %>
+                            <% } %>
+                        
+
+                     <% } %>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer >
+        <div style="position: absolute;bottom: 0;" class="w-100">
+            <%- include('../partials/footer'); %>
+        </div>
+    </footer>
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js">
+	</script> 
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js">
+	</script>
+    <script src="scripts/persAc.js"></script>
+
+</body>

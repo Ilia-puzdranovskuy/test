@@ -1,0 +1,113 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Адмін панель</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="/admin/style/style.css" rel="stylesheet" type="text/css">
+<body class="bg-light d-flex">
+    <%- include('../admin_partials/panelNav'); %>
+    <main class="">
+      <div class="p-1 text-danger"><h5>Новини веб-сайту</h5><h5 style="color: blue;"><%= errors%></h5></div>
+      <div class="block-bg mw-100">
+        <div class="p-1 text-danger"><h5>Нова новина</h5></div>
+        <form method="post" action="/admin-panel-controll/new-news">
+          <div class="mb-3">
+            <label for="header" class="form-label">Заголовок</label>
+            <input type="text" class="form-control" id="header" name="header" required>
+          </div>
+          <div class="mb-3">
+            <label for="image" class="form-label">Картинка</label>
+            <input type="text" class="form-control" id="image" name="image" required>
+          </div>
+          <div class="form-floating">
+            <textarea class="form-control" placeholder="Основна частина" id="floatingTextarea" name="body" required></textarea>
+            <label for="floatingTextarea">Основна частина</label>
+          </div>
+          <button type="submit" class="btn btn-primary">Додати</button>
+        </form>
+      </div>
+      <div class="block-bg mw-100">
+        <div class="p-1 text-danger"><h5>Список новин</h5></div>
+                <div  id="table-wrapper">
+                    <div id="table-scroll">
+                        <table class="w-100 search-result-table" >
+                            <tr>
+                            <th>ID-новини</th>
+                            <th>Заголовок</th>
+                            <th>Основна частина</th>
+                            <th>Картинка</th>
+                            <th>Дата створення</th>
+                            <th>Статус</th>
+                            <th>Створив</th>
+                            <th></th>
+                            <th></th>
+                            </tr>
+                                <% for(var i=0; i < news.length; i++) { %>
+                                    <tr>
+
+                                        <% if(news[i].id_news != undefined){ %>
+                                            <td><%= news[i].id_news%></td>
+                                        <% }else{ %>
+                                            <td>Невідомо</td>
+                                        <% } %>
+
+                                        <% if(news[i].header!= undefined){ %>
+                                          <td><%= news[i].header%></td>
+                                        <% }else{ %>
+                                            <td>Невідомо</td>
+                                        <% } %>
+
+                                        <% if(news[i].body != undefined){ %>
+                                          <td><%= news[i].body%></td>
+                                        <% }else{ %>
+                                            <td>Невідомо</td>
+                                        <% } %>
+
+                                        <% if(news[i].image != undefined){ %>
+                                          <td><%= news[i].image%></td>
+                                        <% }else{ %>
+                                            <td>Невідомо</td>
+                                        <% } %>
+
+                                        <% if(news[i].date != undefined){ %>
+                                          <td><%= moment(news[i].date ).format("D-MM-YYYY")%></td>
+                                        <% }else{ %>
+                                            <td>Невідомо</td>
+                                        <% } %>
+
+                                        <% if(news[i].status == "1"){ %>
+                                          <td style="background-color: greenyellow;">Активна</td>
+                                        <% }else{ %>
+                                            <td>Неактивна</td>
+                                        <% } %>
+
+                                        <% if(news[i].author_create != undefined){ %>
+                                          <td><%= news[i].author_create%></td>
+                                        <% }else{ %>
+                                            <td>Невідомо</td>
+                                        <% } %>
+
+                                        <td style="width: 100px;">
+                                          <form  onsubmit="return confirm('Ви впевнені, що хочете активувати новину?')" method="post" action="/admin-panel-controll/activate-news?newsId=<%=news[i].id_news%>">
+                                            <button type="submit" class="btn btn-success">Активувати</button>
+                                          </form>
+                                        </td>
+                                        <td style="width: 100px;">
+                                          <form  onsubmit="return confirm('Ви впевнені, що хочете деактивувати новину?')" method="post" action="/admin-panel-controll/deactivate-news?newsId=<%=news[i].id_news%>">
+                                            <button type="submit" class="btn btn-danger">Деактивувати</button>
+                                          </form>
+                                        </td>
+                                    </tr>
+                                <% } %>
+                            
+                        </table>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    </main>
+    
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> 
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/admin/js/scripts.js"></script>
+</body>
