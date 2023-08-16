@@ -4,7 +4,7 @@ var connection = {
     user     : conf.userDB,
     password : conf.passwordDB,
     database : conf.databaseDB,
-    charset: "UTF-8"
+    charset: "utf8mb4"
   };
    
   module.exports = connection;
