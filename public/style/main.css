@@ -511,9 +511,10 @@ hr{
     }
     .carousel-caption{
       top: 2%;
-
     }
-  
+    .main-news-short{
+      height: auto;
+    }
     .text-container{
       width: 80vw;
       height: 50vh;
@@ -596,7 +597,7 @@ hr{
       margin: 0;
      }
      .main-imag-with-text-container{
-      margin-bottom: 12%;
+      margin-bottom: 0;
       width: 95vw;
       margin-top: 0;
       height: 78vh;
@@ -616,8 +617,8 @@ hr{
      }
      .text-container{
       width: 95%;
-      margin: 10% 2.5%;
-      height: 100%;
+      margin: 4% 2.5%;
+      height: 80%;
      }
   
      .footer-end a{
@@ -626,9 +627,6 @@ hr{
      .footer-end span{
       font-size: 10px;
      }
-     .main-news-short{
-      height: 150vh;
-     }
 
      .main-news-short p{
       font-size: 10px;
@@ -636,6 +634,55 @@ hr{
      .about{
       height: auto;
      }
+     .small-news-all-container{
+      width: auto;
+     }
+
+     .persAc-main-sec-container{
+      display: flex;
+      flex-direction: column;
+     }
+     .persAc-th-cont-main{
+      width: 100%;
+     }
+     .persAc-th-cont-sec{
+      width: 100%;
+     }
+     .footer-mobile{
+      position: relative !important;
+     }
+     .custom-navbar{
+      display: flex;
+      flex-direction: row;
+      flex-wrap:wrap ;
+      justify-content: center;
+     }
+     .custom-navbar a{
+      margin: 3px;
+     }
+     .persAc-main-container{
+      height: auto;
+     }
+
+     .btn-pers-Ac-navbar{
+      font-size: 14px;
+     }
+     .persAc-navbar-icon{
+      width: 20px;
+      height: 20px;
+     }
+     .personHeaderBtnImage{
+      height: 25px;
+      width: 25px;
+     }
+     .readings-table{
+      display: block;
+      overflow-x: auto;
+      white-space: nowrap;
+      max-width: 100%;
+      overflow:scroll;
+     }
+     
 
   }
 
@@ -755,6 +802,51 @@ hr{
      .persAc-main-container{
       height: 150vh;
      }
+
+     .persAc-main-sec-container{
+      display: flex;
+      flex-direction: column;
+     }
+     .persAc-th-cont-main{
+      width: 100%;
+     }
+     .persAc-th-cont-sec{
+      width: 100%;
+     }
+     .footer-mobile{
+      position: relative !important;
+     }
+     .custom-navbar{
+      display: flex;
+      flex-direction: row;
+      flex-wrap:wrap ;
+      justify-content: center;
+     }
+     .custom-navbar a{
+      margin: 3px;
+     }
+     .persAc-main-container{
+      height: auto;
+     }
+
+     .btn-pers-Ac-navbar{
+      font-size: 14px;
+     }
+     .persAc-navbar-icon{
+      width: 20px;
+      height: 20px;
+     }
+     .personHeaderBtnImage{
+      height: 25px;
+      width: 25px;
+     }
+     .readings-table{
+      display: block;
+      overflow-x: auto;
+      white-space: nowrap;
+      max-width: 100%;
+      overflow:scroll;
+     }
   }
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
@@ -857,6 +949,40 @@ hr{
    }
    .singin-main-text-container, .text-container-singin, .singin-main-text-container-singup{
     margin: 0;
+   }
+   .persAc-main-sec-container{
+    display: flex;
+    flex-direction: column;
+   }
+   .persAc-th-cont-main{
+    width: 100%;
+   }
+   .persAc-th-cont-sec{
+    width: 100%;
+   }
+   .footer-mobile{
+    position: relative !important;
+   }
+   .custom-navbar{
+
+   }
+   .btn-pers-Ac-navbar{
+    font-size: 12px;
+   }
+   .persAc-navbar-icon{
+    width: 20px;
+    height: 20px;
+   }
+   .personHeaderBtnImage{
+    height: 25px;
+    width: 25px;
+   }
+   .readings-table{
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    max-width: 100%;
+    overflow:scroll;
    }
 }
 

@@ -1,0 +1,227 @@
+CREATE TABLE `admins_accounts` (
+  `id_admins_accounts` int NOT NULL AUTO_INCREMENT,
+  `login` varchar(100) NOT NULL,
+  `password` varchar(100) NOT NULL,
+  `key` varchar(100) NOT NULL,
+  `name` varchar(45) NOT NULL,
+  PRIMARY KEY (`id_admins_accounts`),
+  UNIQUE KEY `id_admins_accounts_UNIQUE` (`id_admins_accounts`),
+  UNIQUE KEY `login_UNIQUE` (`login`),
+  UNIQUE KEY `password_UNIQUE` (`password`),
+  UNIQUE KEY `secret_key_UNIQUE` (`key`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
+)
+
+CREATE TABLE `web_accounts` (
+  `id_web_accounts` int NOT NULL AUTO_INCREMENT,
+  `phone_number` varchar(45) NOT NULL,
+  `email` varchar(45) NOT NULL,
+  `password` varchar(100) NOT NULL,
+  `type` enum('1','2','3') NOT NULL DEFAULT '1',
+  `telegram` varchar(45) DEFAULT NULL,
+  `viber` varchar(45) DEFAULT NULL,
+  `activate` int NOT NULL DEFAULT '0',
+  `activateCodeEmail` varchar(45) DEFAULT NULL,
+  `create_date` date DEFAULT NULL,
+  PRIMARY KEY (`id_web_accounts`),
+  UNIQUE KEY `id_UNIQUE` (`id_web_accounts`),
+  UNIQUE KEY `email_UNIQUE` (`email`)
+)
+
+CREATE TABLE `news` (
+  `id_news` int NOT NULL AUTO_INCREMENT,
+  `header` varchar(45) NOT NULL,
+  `body` longtext NOT NULL,
+  `date` date NOT NULL,
+  `image` mediumtext NOT NULL,
+  `status` varchar(45) NOT NULL,
+  PRIMARY KEY (`id_news`),
+  UNIQUE KEY `id_news_UNIQUE` (`id_news`)
+)
+
+CREATE TABLE `telegrams_users` (
+  `id_telegrams_users` int NOT NULL AUTO_INCREMENT,
+  `telegram_ac_id` varchar(45) NOT NULL,
+  PRIMARY KEY (`id_telegrams_users`),
+  UNIQUE KEY `id_telegrams_users_UNIQUE` (`id_telegrams_users`)
+)
+
+CREATE TABLE `news_for_personal_accounts` (
+  `id_news_for_personal_accounts` int NOT NULL AUTO_INCREMENT,
+  `header` varchar(45) NOT NULL,
+  `body` text NOT NULL,
+  `creat_date` date NOT NULL,
+  `status` enum('0','1') NOT NULL DEFAULT '0',
+  `author` varchar(45) NOT NULL,
+  PRIMARY KEY (`id_news_for_personal_accounts`),
+  UNIQUE KEY `id_news_for_personal_accounts_UNIQUE` (`id_news_for_personal_accounts`)
+)
+
+CREATE TABLE `tarifs` (
+  `id_tarif` int NOT NULL AUTO_INCREMENT,
+  `consumer_type` enum('1','2','3') NOT NULL,
+  `water` decimal(10,2) NOT NULL,
+  `drainage` decimal(10,2) NOT NULL,
+  `rubbish` decimal(10,2) NOT NULL,
+  PRIMARY KEY (`id_tarif`),
+  UNIQUE KEY `id_tarif_UNIQUE` (`id_tarif`),
+  UNIQUE KEY `consumer_type_UNIQUE` (`consumer_type`)
+)
+
+CREATE TABLE `personal_accounts` (
+  `id_personal_account` int NOT NULL AUTO_INCREMENT,
+  `personal_account` varchar(45) NOT NULL,
+  `full_name` varchar(45) NOT NULL,
+  `street` varchar(45) NOT NULL,
+  `house` varchar(45) NOT NULL,
+  `apartment` varchar(45) NOT NULL,
+  `settlement` varchar(45) NOT NULL,
+  `date_of_creation` date NOT NULL,
+  `privilege` enum('1','0') NOT NULL,
+  `type` enum('1','2','3') DEFAULT NULL,
+  `serviceProvider` varchar(45) NOT NULL,
+  `closing_date` date DEFAULT NULL,
+  `number_of_people` int DEFAULT NULL,
+  `services` json DEFAULT NULL,
+  `balance` decimal(19,2) DEFAULT NULL,
+  `web_account_id` int DEFAULT NULL,
+  `telegram_ac` int DEFAULT NULL,
+  PRIMARY KEY (`id_personal_account`),
+  UNIQUE KEY `id_UNIQUE` (`id_personal_account`),
+  KEY `id_personal_account_idx` (`personal_account`),
+  KEY `web_account_id_idx` (`web_account_id`),
+  KEY `telegram_ac_idx` (`telegram_ac`),
+  KEY `personal_accounts_ibfk_1` (`type`),
+  CONSTRAINT `personal_accounts_ibfk_1` FOREIGN KEY (`type`) REFERENCES `tarifs` (`consumer_type`),
+  CONSTRAINT `telegram_ac` FOREIGN KEY (`telegram_ac`) REFERENCES `telegrams_users` (`id_telegrams_users`),
+  CONSTRAINT `web_account_id` FOREIGN KEY (`web_account_id`) REFERENCES `web_accounts` (`id_web_accounts`)
+)
+
+CREATE TABLE `agreements` (
+  `id_agreements` int NOT NULL AUTO_INCREMENT,
+  `personal_account_id_agreements` int NOT NULL,
+  `date_of_create` date NOT NULL,
+  `work_from` date NOT NULL,
+  `work_to` date DEFAULT NULL,
+  `full_name` varchar(45) NOT NULL,
+  `type` enum('1','2','3') NOT NULL DEFAULT '1',
+  `birth_date` date DEFAULT NULL,
+  `indification_code` varchar(45) DEFAULT NULL,
+  `street` varchar(45) NOT NULL,
+  `house` varchar(45) NOT NULL,
+  `apartment` varchar(45) NOT NULL,
+  `settlement` varchar(45) NOT NULL,
+  PRIMARY KEY (`id_agreements`),
+  UNIQUE KEY `id_agreements_UNIQUE` (`id_agreements`),
+  UNIQUE KEY `personal_account_UNIQUE` (`personal_account_id_agreements`),
+  CONSTRAINT `personal_account_id_agreements` FOREIGN KEY (`personal_account_id_agreements`) REFERENCES `personal_accounts` (`id_personal_account`)
+)
+
+CREATE TABLE `payments` (
+  `id_payment` int NOT NULL AUTO_INCREMENT,
+  `personal_account` int NOT NULL,
+  `sum` decimal(19,2) NOT NULL,
+  `status` varchar(45) NOT NULL,
+  `date_time` datetime NOT NULL,
+  `way` varchar(45) NOT NULL,
+  `type` varchar(45) NOT NULL,
+  `indificator` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id_payment`),
+  UNIQUE KEY `id_payment_UNIQUE` (`id_payment`),
+  KEY `personal_account` (`personal_account`),
+  CONSTRAINT `personal_account` FOREIGN KEY (`personal_account`) REFERENCES `personal_accounts` (`id_personal_account`)
+)
+
+CREATE TABLE `privilege_personal_documents` (
+  `id_privilege_personal_documents` int NOT NULL AUTO_INCREMENT,
+  `personal_account_id_privilege_doc` int NOT NULL,
+  `full_name` varchar(45) NOT NULL,
+  `indification_code` varchar(45) NOT NULL,
+  `privilege_type` varchar(45) NOT NULL,
+  `document_type` varchar(45) NOT NULL,
+  `document` varchar(45) NOT NULL,
+  `date_from` date NOT NULL,
+  `date_to` date DEFAULT NULL,
+  PRIMARY KEY (`id_privilege_personal_documents`),
+  UNIQUE KEY `id_privilege_personal_documents_UNIQUE` (`id_privilege_personal_documents`),
+  UNIQUE KEY `personal_account_id_UNIQUE` (`personal_account_id_privilege_doc`),
+  CONSTRAINT `personal_account_id_privilege_doc` FOREIGN KEY (`personal_account_id_privilege_doc`) REFERENCES `personal_accounts` (`id_personal_account`)
+)
+
+CREATE TABLE `meters` (
+  `id_meters` int NOT NULL AUTO_INCREMENT,
+  `personal_account_id` int NOT NULL,
+  `type` int NOT NULL,
+  `service` varchar(45) NOT NULL ,
+  `brand` varchar(45) DEFAULT NULL,
+  `serial_number` varchar(45) DEFAULT NULL,
+  `release_date` date DEFAULT NULL,
+  `installation_date` date DEFAULT NULL,
+  `date_of_last_service` date DEFAULT NULL,
+  `deinstallation_date` date DEFAULT NULL,
+  `status` varchar(45) DEFAULT NULL,
+  `location` varchar(45) DEFAULT NULL,
+  `last_readinng` decimal(19,2) DEFAULT NULL,
+  `last_readinng_date` date DEFAULT NULL,
+  PRIMARY KEY (`id_meters`),
+  UNIQUE KEY `id_UNIQUE` (`id_meters`),
+  KEY `personal_account_id` (`personal_account_id`),
+  CONSTRAINT `meters_ibfk_1` FOREIGN KEY (`personal_account_id`) REFERENCES `personal_accounts` (`id_personal_account`)
+) 
+
+CREATE TABLE `readings` (
+  `id_reading` int NOT NULL AUTO_INCREMENT,
+  `id_meter_reading` int NOT NULL,
+  `reading` decimal(19,2) NOT NULL,
+  `source` varchar(45) NOT NULL,
+  `reading_date` date NOT NULL,
+  `calculated` tinyint NOT NULL DEFAULT '0',
+  `calculated_date` date DEFAULT NULL,
+  PRIMARY KEY (`id_reading`),
+  UNIQUE KEY `id_reading_UNIQUE` (`id_reading`),
+  KEY `id_meter_idx` (`id_meter_reading`),
+  KEY `id_meter_reading_idx` (`id_meter_reading`),
+  CONSTRAINT `id_meter_reading` FOREIGN KEY (`id_meter_reading`) REFERENCES `meters` (`id_meters`)
+)
+
+
+CREATE TABLE `seals` (
+  `id_seals` int NOT NULL AUTO_INCREMENT,
+  `id_meter` int NOT NULL,
+  `personal_account` varchar(45) NOT NULL,
+  `brand_seal` varchar(45) DEFAULT NULL,
+  `installation_date` date DEFAULT NULL,
+  `serial_number_seal` varchar(45) DEFAULT NULL,
+  `date_of_withdrawal` date DEFAULT NULL,
+  PRIMARY KEY (`id_seals`),
+  UNIQUE KEY `id_seals_UNIQUE` (`id_seals`),
+  KEY `id_meter_idx` (`id_meter`),
+  CONSTRAINT `id_meter` FOREIGN KEY (`id_meter`) REFERENCES `meters` (`id_meters`)
+)
+
+
+CREATE TABLE `accrual` (
+  `id_accrual` int NOT NULL AUTO_INCREMENT,
+  `personal_account_id_accrual` int NOT NULL,
+  `date` date NOT NULL,
+  `id_previous_reading` int NOT NULL,
+  `id_curent_reading` int NOT NULL,
+  `consumption_water` decimal(19,3) NOT NULL,
+  `consumption_drainage` decimal(19,3) NOT NULL,
+  `accrual_water` decimal(10,2) NOT NULL,
+  `accrual_drainage` decimal(10,2) NOT NULL,
+  `accrual_rubbish` decimal(10,2) NOT NULL,
+  `sum` decimal(19,2) NOT NULL,
+  `personal_account_type` enum('1','2','3') NOT NULL,
+  `author` varchar(45) NOT NULL,
+  PRIMARY KEY (`id_accrual`),
+  UNIQUE KEY `id_accrual_UNIQUE` (`id_accrual`),
+  UNIQUE KEY `id_previous_reading_UNIQUE` (`id_previous_reading`),
+  UNIQUE KEY `id_curent_reading_UNIQUE` (`id_curent_reading`),
+  KEY `personal_account_type_idx` (`personal_account_type`),
+  KEY `personal_account_id_accrual` (`personal_account_id_accrual`),
+  CONSTRAINT `id_curent_reading` FOREIGN KEY (`id_curent_reading`) REFERENCES `readings` (`id_reading`),
+  CONSTRAINT `id_previous_reading` FOREIGN KEY (`id_previous_reading`) REFERENCES `readings` (`id_reading`),
+  CONSTRAINT `personal_account_id_accrual` FOREIGN KEY (`personal_account_id_accrual`) REFERENCES `personal_accounts` (`id_personal_account`),
+  CONSTRAINT `personal_account_type` FOREIGN KEY (`personal_account_type`) REFERENCES `tarifs` (`consumer_type`)
+)
