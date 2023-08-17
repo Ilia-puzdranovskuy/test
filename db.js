@@ -3,8 +3,7 @@ var connection = {
     host     : conf.hostDB,
     user     : conf.userDB,
     password : conf.passwordDB,
-    database : conf.databaseDB,
-    charset: "utf8"
+    database : conf.databaseDB
   };
    
   module.exports = connection;
