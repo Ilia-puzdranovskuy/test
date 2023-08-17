@@ -640,7 +640,7 @@ exports.newPersAccountPost= async (req, res) => {
 
         })
     }
-    res.redirect('/admin-panel-controll')
+    res.redirect('/admin-panel-controll/main')
 }
 ///////////////////////////////////////
 
