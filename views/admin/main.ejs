@@ -75,9 +75,13 @@
                     <% } %>
 
                     <% if(personalAccounts[i].type == '1'){ %>
-                      <td>Юрид</td>
+                      <td>1 група</td>
                     <% }else{ %>
-                      <td>ФОП</td>
+                      <% if(personalAccounts[i].type == '2'){ %>
+                        <td>2 група</td>
+                      <% }else{ %>
+                        <td>3 група</td>
+                        <% } %>
                     <% } %>
 
                     <td style="font-size: small;"><%= personalAccounts[i].serviceProvider%></td>

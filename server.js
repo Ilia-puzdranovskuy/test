@@ -58,7 +58,10 @@ app.use(pagesPost)
 const admin = require("./routes/adminsRoutes");
 app.use('/admin-panel-controll/',admin);
 
-
+app.use( (req, res) => {
+  //render page not found 
+  res.redirect('/')
+})
 
 // let transfer = require("./controllers/transferBD");
 

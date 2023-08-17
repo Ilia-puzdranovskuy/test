@@ -23,10 +23,17 @@
             </thead>
             <tbody>
               <tr>
+                <td>
+                  <select class="form-select" name="service" required>
+                  <option value="Водопостачання" selected>Водопостачання</option>
+                  <option value="Водовідведення">Водовідведення</option>
+                  <option value="Вивіз сміття">Вивіз сміття</option>
+                </select>
+              </td>
                 <td><input placeholder="Сума"  required name="sum" type="number" step=".01" ></td>
                 <td><input placeholder="Дата (р-м-д)"  required name="paymentDate" value="<%=moment(  new Date()).format("YYYY-MM-D H:mm:ss")%>" type="text" ></td>
                 <td>
-                  <select class="form-select" name="way">
+                  <select class="form-select" name="way" required>
                   <option value="Каса" selected>Каса</option>
                   <option value="ОщадБанк">ОщадБанк</option>
                   <option value="УкрПошта">УкрПошта</option>
@@ -58,6 +65,7 @@
           <thead>
             <tr>
               <th>ID-плат.</th>
+              <th>Послуга</th>
               <th>Сума</th>
               <th>Статус</th>
               <th>Дата</th>
@@ -65,6 +73,8 @@
               <th>Тип розрах.</th>
               <th>Індифікатор</th>
               <th>Автор</th>
+              <th>Перенаправлення</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -72,6 +82,12 @@
               <tr>
                 <% if(payments[i].id_payment != undefined){ %>
                   <td><%= payments[i].id_payment %></td>
+                <% }else{ %>
+                  <td>Невідомо</td>
+                <% } %>
+
+                <% if(payments[i].service != undefined){ %>
+                  <td><%= payments[i].service %></td>
                 <% }else{ %>
                   <td>Невідомо</td>
                 <% } %>
@@ -117,6 +133,17 @@
                 <% }else{ %>
                   <td>Невідомо</td>
                 <% } %>
+                <% if(payments[i].redirection != undefined){ %>
+                  <td><%= payments[i].redirection %></td>
+                <% }else{ %>
+                  <td>-</td>
+                <% } %>
+
+                <td style="width: 100px;">
+                  <form  onsubmit="return confirm('Ви впевнені, що хочете видалити платіж?')" method="post" action="/admin-panel-controll/delete-payment?paymentId=<%=payments[i].id_payment%>&persAcId=<%=persAcId%>">
+                    <button type="submit" class="btn btn-danger">Видалити</button>
+                  </form>
+                </td>
               </tr>
             <% } %>
           </tbody>

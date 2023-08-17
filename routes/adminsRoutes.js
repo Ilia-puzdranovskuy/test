@@ -28,6 +28,10 @@ router.post("/delete-reading",adminController.deleteReading);
 
 router.get("/paymets-and-accruals",adminController.paymentsAndAccruals);
 router.post("/new-payment",adminController.newPayment);
+router.post("/delete-payment",adminController.deletePayment);
+
+router.get("/payment-redirect",adminController.redirectPayment);
+router.post("/payment-redirect-post",adminController.redirectPaymentPost);
 
 router.get("/meters",adminController.meters);
 router.post("/change-meter",adminController.changeMeter);

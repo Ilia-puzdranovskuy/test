@@ -25,12 +25,7 @@ router.get("/forgot-password",(req,res)=>{
     res.render('pages/forgotPasswordEmail',{errors:""});
 })
 
-router.get("/tarifs",(req,res)=>{
-    res.render('pages/tarifs');
-})
-router.get("/about",(req,res)=>{
-    res.render('pages/about');
-})
+
 
 
 ///news
@@ -50,5 +45,8 @@ router.get("/personal-account/readings",personalAccountController.readingsPage);
 router.get("/personal-account/add-persAc",personalAccountController.addPersAcPage);
 
 // router.get("/personal-account/payments",personalAccountController.calculationPage);
+
+
+
 
 module.exports = router;

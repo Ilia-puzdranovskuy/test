@@ -201,8 +201,8 @@ exports.newReading = async (req, res) => {
     let errors='';
     console.log(req.body);
     let user = jwt.verify(req.cookies.admintoken, config.admin_secret);
-    let newReadingsQuery = `INSERT INTO readings ( id_meter_reading, reading, source, reading_date) 
-          VALUES ('${req.query.meterId}','${Number(req.body.reading)}','${user.name}','${req.body.readingDate}')`;
+    let newReadingsQuery = `INSERT INTO readings ( id_meter_reading, reading, source, reading_date, inspector) 
+          VALUES ('${req.query.meterId}','${Number(req.body.reading)}','${user.name}','${req.body.readingDate}','${req.body.inspector}')`;
           connection.query(newReadingsQuery, async(err, result) => {
             if (err) {
                 console.log("internal error", err);
@@ -345,8 +345,8 @@ exports.newPayment = async (req, res) => {
                 return;
             }
 
-            let newPaymentQuery = `INSERT INTO payments ( personal_account, sum, status, date_time, way, type, indificator,author_create) 
-            VALUES ('${req.query.persAcId}','${Number(req.body.sum)}','${'Оброблений'}','${req.body.paymentDate}','${req.body.way}','${req.body.type}','${req.body.indificator}','${user.name}')`;
+            let newPaymentQuery = `INSERT INTO payments ( personal_account, sum, status, date_time, way, type, indificator,author_create,service) 
+            VALUES ('${req.query.persAcId}','${Number(req.body.sum)}','${'Оброблений'}','${req.body.paymentDate}','${req.body.way}','${req.body.type}','${req.body.indificator}','${user.name}', '${req.body.service}' )`;
           await  connection.query(newPaymentQuery, async(err, result) => {
               if (err) {
                   console.log("internal error", err);
@@ -358,6 +358,121 @@ exports.newPayment = async (req, res) => {
         res.redirect('back');
 }
 
+exports.deletePayment = async (req, res) => {
+    if(isAuth(req,res)){
+        return
+    }
+    let errors='';
+    console.log(req.body);
+    let user = jwt.verify(req.cookies.admintoken, config.admin_secret);
+
+
+    let selectPayment = 
+    `SELECT payments.sum
+    FROM payments
+    WHERE payments.id_payment = '${req.query.paymentId}'`;
+   await connection.query(selectPayment, async(err, result) => {
+      if (err) {
+          console.log("internal error", err);
+          return;
+      }
+      let parseRes= JSON.parse(JSON.stringify(result));
+
+      let updateBalance = 
+      `UPDATE personal_accounts
+      SET balance = balance - '${Number(parseRes[0].sum)}'
+      WHERE id_personal_account = '${req.query.persAcId}'`;
+     await connection.query(updateBalance, async(err, result) => {
+        if (err) {
+            console.log("internal error", err);
+            return;
+        }
+    });
+  });
+  
+  let delPayment = 
+  `DELETE 
+  FROM payments
+  WHERE payments.id_payment = '${req.query.paymentId}'`;
+ await connection.query(delPayment, async(err, result) => {
+    if (err) {
+        console.log("internal error", err);
+        return;
+    }
+    });
+        res.redirect('back');
+}
+
+
+
+
+////// redirectPayment
+
+exports.redirectPayment = async (req, res) => {
+    if(isAuth(req,res)){
+        return
+    }
+    let errors='';
+
+    res.render('admin/paymentRedirectPage',{errors:errors});
+        
+}
+
+exports.redirectPaymentPost = async (req, res) => {
+    if(isAuth(req,res)){
+        return
+    }
+    let errors='';
+      let updatePayment1 = 
+      `UPDATE payments
+      SET sum = sum - '${Number(req.body.sum)}', redirection = 'Особ.р: ${req.body.persAc1},Пл:${req.body.payIdFrom}>Особ.р: ${req.body.persAc2},Пл:${req.body.payIdTo} Сума:${req.body.sum}'
+      WHERE id_payment = '${req.body.payIdFrom}'`;
+     await connection.query(updatePayment1, async(err, result) => {
+        if (err) {
+            console.log("internal error", err);
+            return;
+        }
+    });
+    let updateBalance1 = 
+    `UPDATE personal_accounts
+    SET balance = balance - '${Number(req.body.sum)}'
+    WHERE personal_account = '${req.body.persAc1}'`;
+   await connection.query(updateBalance1, async(err, result) => {
+      if (err) {
+          console.log("internal error", err);
+          return;
+      }
+  });
+
+    let updatePayment2 = 
+    `UPDATE payments
+    SET sum = sum + '${Number(req.body.sum)}', redirection = 'Особ.р: ${req.body.persAc1},Пл:${req.body.payIdFrom}>Особ.р: ${req.body.persAc2},Пл:${req.body.payIdTo} Сума:${req.body.sum}'
+    WHERE id_payment = '${req.body.payIdTo}'`;
+   await connection.query(updatePayment2, async(err, result) => {
+      if (err) {
+          console.log("internal error", err);
+          return;
+      }
+  });
+
+  let updateBalance2 = 
+  `UPDATE personal_accounts
+  SET balance = balance + '${Number(req.body.sum)}'
+  WHERE personal_account = '${req.body.persAc2}'`;
+ await connection.query(updateBalance2, async(err, result) => {
+    if (err) {
+        console.log("internal error", err);
+        return;
+    }
+});
+
+
+    res.render('admin/paymentRedirectPage',{errors:'Перенаправленння успішне'});
+        
+}
+
+
+///////////////////////////
 
 /// METERS 
 
@@ -533,8 +648,6 @@ exports.changeSeal= async (req, res) => {
         res.redirect('back');
 }
 
-
-
 /////
 
 
@@ -566,7 +679,7 @@ exports.changePersAcInformationPost= async (req, res) => {
     let errors = '';
     let user = jwt.verify(req.cookies.admintoken, config.admin_secret);
     let query = `UPDATE personal_accounts
-    SET number_of_people = '${req.body.numberPeople}', services = '${JSON.stringify(req.body.services)}', balance ='${req.body.balance}', author_change = '${user.name}', agreement = '${req.body.agreement}', water_well = '${req.body.waterWell}' 
+    SET number_of_people = '${req.body.numberPeople}', services = '${JSON.stringify(req.body.services)}', balance ='${req.body.balance}', author_change = '${user.name}', agreement = '${req.body.agreement}', water_well = '${req.body.waterWell}', phone_number = '${req.body.phoneNumber}' 
     WHERE id_personal_account= '${req.query["pers-ac-id"]}';`;
     connection.query(query, async(err, result) => {
         if (err) {
@@ -726,8 +839,6 @@ exports.deactivatePersAcNews= async (req, res) => {
 
 /// NEWS ON WEB SITE
 
-
-
 exports.news= async (req, res) => {
     if(isAuth(req,res)){
         return
@@ -799,7 +910,6 @@ exports.deactivateNews= async (req, res) => {
         }
         res.redirect('back');
     })
-
 
 }
 
@@ -894,8 +1004,6 @@ exports.deletePersAc= async (req, res) => {
 
 
 
-
-
 ///// audit///////////////
 
 exports.auditPayments= async (req, res) => {
@@ -936,10 +1044,7 @@ exports.auditPaymentsPost= async (req, res) => {
         let len = parseRes.length
         res.render('admin/auditPaymentsPage',{errors:errors, info:`Дата: ${formatDate(new Date(req.body.dateFrom))} - ${formatDate(new Date(req.body.dateTo))}, Джерело:${req.body.way}, Автор:${req.body.author}`, payments:parseRes, sum:sum,len:len});
     });
-
-    
 }
-
 
 
 exports.auditReadings= async (req, res) => {
@@ -966,7 +1071,7 @@ exports.auditReadingsPost= async (req, res) => {
         waterWel = `AND personal_accounts.water_well = '${req.body.waterWell}'`
     }
     
-    let query= `SELECT personal_accounts.personal_account, personal_accounts.water_well, readings.*
+    let query= `SELECT personal_accounts.personal_account, meters.serial_number, personal_accounts.water_well, readings.*
     FROM ((readings 
     INNER JOIN meters ON readings.id_meter_reading = meters.id_meters )
     INNER JOIN personal_accounts ON meters.personal_account_id = personal_accounts.id_personal_account)
@@ -983,8 +1088,6 @@ exports.auditReadingsPost= async (req, res) => {
 
     
 }
-
-
 
 
 ///////////////////
@@ -1057,9 +1160,6 @@ exports.autoAccrualsClearMarks= async (req, res) => {
     res.render('admin/autoAccrualsPage',{errors:errors});
 }
 
-
-
-
 exports.autoAccrualsPost= async (req, res) => {
     if(isAuth(req,res)){
         return
@@ -1118,7 +1218,7 @@ exports.handAccrual= async (req, res) => {
         let parseResultAccurals = JSON.parse(JSON.stringify(resultAccurals));
         console.log(parseResultAccurals)
         ////////
-        let querypersAcAndTarifs = `SELECT personal_accounts.personal_account,personal_accounts.type, personal_accounts.number_of_people, tarifs.*
+        let querypersAcAndTarifs = `SELECT personal_accounts.personal_account,personal_accounts.type, personal_accounts.services, personal_accounts.number_of_people, tarifs.*
         FROM personal_accounts
         INNER JOIN tarifs on personal_accounts.type = tarifs.consumer_type
         WHERE personal_accounts.id_personal_account ='${req.query['pers-ac-id']}'`;
@@ -1129,7 +1229,24 @@ exports.handAccrual= async (req, res) => {
             }
             let parseResultPersAcAndTrifs= JSON.parse(JSON.stringify(resultPersAcAndTarif));
 
-        res.render('admin/HandAccuralsPage',{errors:errors, persAcId: req.query['pers-ac-id'],accurals:parseResultAccurals,persAcAndTrifs:parseResultPersAcAndTrifs});
+            ////
+
+            let queryMeters = `SELECT meters.*
+            FROM personal_accounts
+            INNER JOIN meters ON meters.personal_account_id = personal_accounts.id_personal_account
+            WHERE personal_accounts.id_personal_account = '${req.query['pers-ac-id']}'
+            ORDER BY meters.id_meters ASC`;
+            connection.query(queryMeters, async(err, resultMeters) => {
+                if (err) {
+                    console.log("internal error", err);
+                    return;
+                }
+                let parseResultMeters = JSON.parse(JSON.stringify(resultMeters));
+
+                res.render('admin/HandAccuralsPage',{errors:errors, persAcId: req.query['pers-ac-id'],accurals:parseResultAccurals,persAcAndTrifs:parseResultPersAcAndTrifs,meters:parseResultMeters});
+            })
+
+       
         })
     });
 }

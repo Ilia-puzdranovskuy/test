@@ -141,17 +141,29 @@
                 <% if(meters[i].type == "1"){ %>
                   <td>
                     <select class="form-select" name="type" required>
-                      <option value="1" selected>Юрид</option>
-                      <option value="2" >ФОП</option>
+                      <option value="1" selected>1 група</option>
+                      <option value="2" >2 група</option>
+                      <option value="3" >3 група</option>
                     </select>
                   </td>
                 <% }else{ %>
-                  <td>
-                    <select class="form-select" name="type" required>
-                      <option value="1" >Юрид</option>
-                      <option value="2" selected>ФОП</option>
-                    </select>
-                  </td>
+                  <% if(meters[i].type == "2"){ %>
+                    <td>
+                      <select class="form-select" name="type" required>
+                        <option value="1" >1 група</option>
+                        <option value="2" selected>2 група</option>
+                        <option value="3" >3 група</option>
+                      </select>
+                    </td>
+                  <% }else{ %>
+                    <td>
+                      <select class="form-select" name="type" required>
+                        <option value="1" >1 група</option>
+                        <option value="2" >2 група</option>
+                        <option value="3" selected>3 група</option>
+                      </select>
+                    </td>
+                  <% } %>
                 <% } %>
 
                 <% if(meters[i].author_create!= undefined){ %>
@@ -226,8 +238,9 @@
                     <td> <input type="text" name="service" value="Водопостачання" style="width: 130px;"></td>
                     <td>
                       <select class="form-select" name="type" required>
-                        <option value="1" selected>Юрид</option>
-                        <option value="2" >ФОП</option>
+                        <option value="1" selected>1 група</option>
+                        <option value="2" >2 група</option>
+                        <option value="3" >3 група</option>
                       </select>
                     </td>
                 <td><button type="submit" class="btn btn-dark">Зберегти</button></td>

@@ -45,7 +45,7 @@ function getAuditToPdfReadings(){
 
     let tb =  document.getElementById('tblbody')
 
-    let cont = [['Особ.рах','Показник','Джерело','Дата','Cкважина']]
+    let cont = [['Особ.рах','Сер.н.ліч.','Показник','Джерело','Дата','Контролер','Cкважина']]
     for (let i = 0; i < tb.children.length; i++) {
         let row =[]
         for (let rw = 0; rw < tb.children[i].children.length; rw++) {
@@ -59,14 +59,14 @@ function getAuditToPdfReadings(){
             layout: 'lightHorizontalLines', // optional
             table: {
               headerRows: 1,
-              widths: [ 'auto','auto','auto','auto','auto'],
+              widths: [ 'auto','auto','auto','auto','auto','auto','auto'],
               body: cont
             }
           }
           
         ],
         defaultStyle: {
-            fontSize: 14,
+            fontSize: 10,
             margin:0
           },
         pageBreakBefore: function(currentNode, followingNodesOnPage, nodesOnNextPage, previousNodesOnPage) {

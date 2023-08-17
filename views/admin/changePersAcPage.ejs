@@ -12,11 +12,15 @@
         <form method="post" action="/admin-panel-controll/change-information?pers-ac-id=<%=persAc[0].id_personal_account%>">
           <div class="mb-3">
             <label for="header" class="form-label">Кількість людей</label>
-            <input type="text" class="form-control" id="header" value="<%= persAc[0].number_of_people%>" name="numberPeople" >
+            <input type="text" class="form-control" id="header" value="<%= persAc[0].number_of_people%>" name="numberPeople" required>
           </div>
           <div class="mb-3">
             <label for="header" class="form-label">Баланс</label>
             <input type="text" class="form-control" id="header" value="<%= persAc[0].balance%>" name="balance" >
+          </div>
+          <div class="mb-3">
+            <label for="header" class="form-label">Номер телефону</label>
+            <input type="text" class="form-control" id="header" value="<%= persAc[0].phone_number%>" name="phoneNumber" >
           </div>
           <div class="mb-3">
             <p>Послуги</p>
@@ -67,14 +71,23 @@
               <% }else{ %>
                 <option  value="Віньківці">Віньківці</option>
               <% } %>
-
-              <option  value=""></option>
-              <option  value=""></option>
-
-              <% if(persAc[0].water_well != undefined&&persAc[0].water_well == "Лілія"){ %>
-                <option selected value="Лілія">Лілія</option>
+              <% if(persAc[0].water_well != undefined&&persAc[0].water_well == "Тополівка"){ %>
+                <option selected value="Тополівка">Тополівка</option>
               <% }else{ %>
-                <option  value="Лілія">Лілія</option>
+                <option  value="Тополівка">Тополівка</option>
+              <% } %>
+              <% if(persAc[0].water_well != undefined&&persAc[0].water_well == "Кут"){ %>
+                <option selected value="Кут">Кут</option>
+              <% }else{ %>
+                
+              <option  value="Кут">Кут</option>
+              <% } %>
+
+
+              <% if(persAc[0].water_well != undefined&&persAc[0].water_well == "Лінія"){ %>
+                <option selected value="Лінія">Лінія</option>
+              <% }else{ %>
+                <option  value="Лінія">Лінія</option>
               <% } %>
 
               <% if(persAc[0].water_well != undefined&&persAc[0].water_well == "Березина"){ %>

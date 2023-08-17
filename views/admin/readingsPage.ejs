@@ -105,6 +105,7 @@
                   <td>
                     <form method="post" action="/admin-panel-controll/new-reading?meterId=<%=meters[i].id_meters%>">
                       <input placeholder="Показник"  required name="reading" type="number" step=".01" style="width: 100px;">
+                      <input placeholder="Контролер"  required name="inspector" type="text"  style="width: 100px;">
                       <input placeholder="Дату подання (р-м-д)"  required name="readingDate" value="<%=moment(  new Date()).format("YYYY-MM-D")%>" type="text" style="width: 100px;">
                       <button type="submit">Зберегти</button>
                     </form>
@@ -126,6 +127,7 @@
                             <th>Показання</th>
                             <th>Дата</th>
                             <th>Дата нарах.</th>
+                            <th>Контролер</th>
                             <th>Джерело</th>
                             <th></th>
                             </tr>
@@ -167,6 +169,12 @@
                                       <% }else{ %>
                                           <td>Невідомо</td>
                                       <% } %>
+
+                                      <% if(readings[i].inspector != undefined){ %>
+                                        <td><%= readings[i].inspector%></td>
+                                    <% }else{ %>
+                                        <td>-</td>
+                                    <% } %>
                                         
                                         <% if(readings[i].source != undefined){ %>
                                             <td><%= readings[i].source%></td>

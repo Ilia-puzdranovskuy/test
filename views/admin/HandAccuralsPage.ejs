@@ -7,6 +7,9 @@
     <%- include('../admin_partials/panelNav'); %>
     <main class="">
       <div class="p-1 text-danger"><h5>Ручні нарахуванння </h5><h5 style="color: blue;"><%= errors%></h5></div>
+      <!-- Сміття -->
+      <% if(JSON.parse(persAcAndTrifs[0].services).includes('Вивізсміття')){ %>
+
       <div class="block-bg mw-100">
         <div class="p-1 text-danger"><h5>Здійснити ручне нарахуванняза за вивіз сміття</h5></div>
         <form method="post" action="/admin-panel-controll/new-hand-accural-rubbish?persAcId=<%=persAcId%>">
@@ -43,7 +46,91 @@
             </table>
         </form>
         </div>
+        <% }%>
 
+        <!-- Водопостачання --> 
+      <% if(JSON.parse(persAcAndTrifs[0].services).includes('Водопостачання')){ %>
+        <% for(var i=0; i < meters.length; i++) { %>
+        <div class="block-bg mw-100">
+          <div class="p-1 text-danger"><h5>Здійснити ручне нарахуванняза за водопостачання</h5></div>
+          <form method="post" action="/admin-panel-controll/new-hand-accural-rubbish?persAcId=<%=persAcId%>">
+            <table class="search-result-table">
+              <thead>
+                <tr>
+                  <th>Марка.ліч</th>
+                  <th>Сер.номер</th>
+                  <th>Статус</th>
+                  <th>Тариф</th>
+                  <th>Остан.показ</th>
+                  <th>Дата ост.показ.</th>>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><%=persAcAndTrifs[0].personal_account%></td>
+                  <td><input placeholder="Кількість людей" id="numPRub" onchange="sumRubish()" required name="numP" type="number" value="<%=persAcAndTrifs[0].number_of_people%>" ></td>
+                    <% if(persAcAndTrifs[0].type!= undefined){ %>
+                      <% if(persAcAndTrifs[0].type==1){ %>
+                        <td>Юрид <input   required  name="typeAc"  value="<%=persAcAndTrifs[0].type%>" style="display: none;"></td>
+                      <% }%>
+                      <% if(persAcAndTrifs[0].type==2){ %>
+                        <td>ФОП <input   required  name="typeAc"  value="<%=persAcAndTrifs[0].type%>" style="display: none;"></td>
+                      <% }%>
+                    <% }else{ %>
+                      <td>Невідомо</td>
+                    <% } %>
+                  <td><input placeholder="Тариф"  required id="tarifRub" onchange="sumRubish()" name="tarif" type="number" value="<%=persAcAndTrifs[0].rubbish%>" step="any"></td>
+                  <td><input placeholder="Cумма"  required id="sumRub" name="sum" type="number"   step="any" ></td>
+                  <td><button type="submit" class="btn btn-dark">Зберегти</button></td>
+                </tr>
+              </tbody>
+              </table>
+          </form>
+          </div>
+          <% }%>
+      <% }%>
+
+          <!-- Водовідведення -->
+      <% if(JSON.parse(persAcAndTrifs[0].services).includes('Водовідведення')){ %>
+
+        <div class="block-bg mw-100">
+          <div class="p-1 text-danger"><h5>Здійснити ручне нарахуванняза за водовідведення</h5></div>
+          <form method="post" action="/admin-panel-controll/new-hand-accural-rubbish?persAcId=<%=persAcId%>">
+            <table class="search-result-table">
+              <thead>
+                <tr>
+                  <th>Особ.рах</th>
+                  <th>Кількість людей</th>
+                  <th>Тип рахунку</th>
+                  <th>Тариф</th>
+                  <th>Сумма</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><%=persAcAndTrifs[0].personal_account%></td>
+                  <td><input placeholder="Кількість людей" id="numPRub" onchange="sumRubish()" required name="numP" type="number" value="<%=persAcAndTrifs[0].number_of_people%>" ></td>
+                    <% if(persAcAndTrifs[0].type!= undefined){ %>
+                      <% if(persAcAndTrifs[0].type==1){ %>
+                        <td>Юрид <input   required  name="typeAc"  value="<%=persAcAndTrifs[0].type%>" style="display: none;"></td>
+                      <% }%>
+                      <% if(persAcAndTrifs[0].type==2){ %>
+                        <td>ФОП <input   required  name="typeAc"  value="<%=persAcAndTrifs[0].type%>" style="display: none;"></td>
+                      <% }%>
+                    <% }else{ %> 
+                      <td>Невідомо</td>
+                    <% } %>
+                  <td><input placeholder="Тариф"  required id="tarifRub" onchange="sumRubish()" name="tarif" type="number" value="<%=persAcAndTrifs[0].rubbish%>" step="any"></td>
+                  <td><input placeholder="Cумма"  required id="sumRub" name="sum" type="number"   step="any" ></td>
+                  <td><button type="submit" class="btn btn-dark">Зберегти</button></td>
+                </tr>
+              </tbody>
+              </table>
+          </form>
+          </div>
+          <% }%>
 
       <div  class="table-wrapper">
       
