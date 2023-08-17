@@ -3,7 +3,7 @@ module.exports = {
     hostDB     : 'localhost',
     userDB    : 'user',
     passwordDB : 'Password123#@!',
-    databaseDB : 'test_db',
+    databaseDB : 'municipal_enterprise',
     //mail
     mailService: 'gmail',
     mailUser: "ilia.puzdranokuy@gmail.com",
