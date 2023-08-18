@@ -306,10 +306,9 @@ exports.paymentsAndAccruals = async (req, res) => {
             }
             let parseResultPayments = JSON.parse(JSON.stringify(resultPayments));
 
-            let queryAccurals = `SELECT accrual.*, personal_accounts.number_of_people, readings.*
-            FROM ((personal_accounts
+            let queryAccurals = `SELECT accrual.*
+            FROM (personal_accounts
             INNER JOIN accrual ON personal_accounts.id_personal_account = accrual.personal_account_id_accrual)
-            INNER JOIN readings ON accrual.id_previous_reading= readings.id_reading OR accrual.id_curent_reading = readings.id_reading)
             WHERE personal_accounts.id_personal_account = '${req.query['pers-ac-id']}'
             ORDER BY accrual.id_accrual AND accrual.date DESC`;
         connection.query(queryAccurals, async(err, resultAccurals) => {
@@ -1134,8 +1133,6 @@ exports.autoAccrualsCheckPost= async (req, res) => {
                         return;
                     }
                 });
-
-            
         }
     });
 
@@ -1150,7 +1147,7 @@ exports.autoAccrualsClearMarks= async (req, res) => {
 
   
     let query= `UPDATE personal_accounts
-    SET accural_status = ''`;
+    SET accural_status = NULL`;
     connection.query(query, async(err, result) => {
         if (err) {
             console.log("internal error", err);
@@ -1164,33 +1161,248 @@ exports.autoAccrualsPost= async (req, res) => {
     if(isAuth(req,res)){
         return
     }
-    let errors = '';
-    let way =``;
-    let waterWel =``;
-    if(req.body.way !="all"){
-        way = `AND readings.source = '${req.body.way}'`
-    }
+    let user = jwt.verify(req.cookies.admintoken, config.admin_secret);
 
-    if(req.body.waterWell !="all"){
-        waterWel = `AND personal_accounts.water_well = '${req.body.waterWell}'`
-    }
-    
-    let query= `SELECT personal_accounts.personal_account, personal_accounts.water_well, readings.*
-    FROM ((readings 
-    INNER JOIN meters ON readings.id_meter_reading = meters.id_meters )
-    INNER JOIN personal_accounts ON meters.personal_account_id = personal_accounts.id_personal_account)
-    where DATE(readings.reading_date) BETWEEN '${formatDate(new Date(req.body.dateFrom))}' AND '${formatDate(new Date(req.body.dateTo))}' ${way} ${waterWel}`;
-    connection.query(query, async(err, result) => {
+    let listOfErrors ='';
+    let tarifsQuery = 'SELECT * FROM tarifs;'
+    await connection.query(tarifsQuery, async(err, resultTarifs) => {
         if (err) {
             console.log("internal error", err);
             return;
         }
-        let parseRes = JSON.parse(JSON.stringify(result));
-        let sum =parseRes.length;
-        res.render('admin/auditReadingsPage',{errors:errors, info:`Дата: ${formatDate(new Date(req.body.dateFrom))} - ${formatDate(new Date(req.body.dateTo))}, Джерело:${req.body.way}, Скважина :${req.body.waterWell}`, payments:parseRes, sum:sum});
-    });
+    let tarifsArray = JSON.parse(JSON.stringify(resultTarifs));
 
-    
+
+    let query= `SELECT * FROM personal_accounts
+    where personal_accounts.closing_date is  null;`;
+    await connection.query(query, async(err, result) => {
+        if (err) {
+            console.log("internal error", err);
+            return;
+        }
+        let parseResListPersonalAccounts = JSON.parse(JSON.stringify(result));
+
+        for (let i = 0; i < parseResListPersonalAccounts.length; i++) {
+            const element = parseResListPersonalAccounts[i];
+            let marksOfErrors = JSON.parse(element.accural_status);
+           
+            let serviceList  = element.services;
+            let errorsCounter ={'Сміття':0,'Водопостачання':0,'Лічильники':[],'Водовідведення':0,'Інші':0};
+            let personallAccuralSum=0;
+            let consumptionForDrinage = 0;
+            ///accural RUBBISH
+            if(serviceList==null){
+                listOfErrors+=`Помилка: рахунок ${element.personal_account} немає жодних послуг! `+'\n'
+                errorsCounter.Інші++;
+            }else{
+            if(serviceList.includes("Вивізсміття")&&(marksOfErrors===null||marksOfErrors.Сміття!==0)){
+                if(element.number_of_people!=undefined && element.number_of_people!=0 && element.number_of_people!=null){
+                    let rubbishAccurallSum =Number(tarifsArray[element.type-1].rubbish)*Number(element.number_of_people);
+                    let queryNewAcuralRubbish= `INSERT INTO accrual (personal_account_id_accrual, date, service, num_people,
+                        tarif,accural_sum,personal_account_type,author_create,type)
+                        VALUES ('${element.id_personal_account}', '${formatDate(new Date)}', '${"Вивізсміття"}', '${element.number_of_people}',
+                        '${tarifsArray[element.type-1].rubbish}','${rubbishAccurallSum}',
+                        '${element.type}','${user.name}','${"Авто"}');`;
+                    await connection.query(queryNewAcuralRubbish, async(err, result) => {
+                        if (err) {
+                            console.log("internal error", err);
+                            return;
+                        }
+                        personallAccuralSum+=rubbishAccurallSum;
+                    });
+                }else{
+                    listOfErrors+=`Помилка: рахунок ${element.personal_account} невірна кількість людей для нарахування за вивіз сміття! `+'\n'
+                    errorsCounter.Сміття++;
+                }
+
+            }
+            ///accural wather
+            if(serviceList.includes("Водопостачання")&&(marksOfErrors===null||marksOfErrors.Водопостачання!==0)){
+                let queryMetersOfPersonalAc= `SELECT * FROM meters
+                where meters.personal_account_id = ${element.id_personal_account} AND meters.status !='Неактивний';`;
+                await connection.query(queryMetersOfPersonalAc, async(err, resultMeters) => {
+                    if (err) {
+                        console.log("internal error", err);
+                        return;
+                    }
+                
+                let metersList = JSON.parse(JSON.stringify(resultMeters));
+                if(metersList.length!=0){
+
+                    for (let m = 0; m < metersList.length; m++) {
+
+                        const meter = metersList[m];
+                        if(marksOfErrors===null||marksOfErrors.Лічильники.includes(meter.id_meters)){
+                        let querylastCalculatedReading= `SELECT * FROM readings
+                        where readings.id_meter_reading = ${meter.id_meters} AND readings.calculated ='1' ORDER BY readings.id_reading DESC LIMIT 1;`;
+                        await connection.query(querylastCalculatedReading, async(err, resultCalculatedReading) => {
+                            if (err) {
+                                console.log("internal error", err);
+                                return;
+                            }
+                            let lastCalculatedReading = JSON.parse(JSON.stringify(resultCalculatedReading));
+                            if(lastCalculatedReading.length!=0){
+                                let consumptionWaterByCalcLastReading = Number(meter.last_readinng) - Number(lastCalculatedReading[0].reading);
+                                if(consumptionWaterByCalcLastReading>0){
+                                    consumptionForDrinage+=consumptionWaterByCalcLastReading;
+                                    console.log('--'+consumptionForDrinage)
+                                    let accuralSumWaterByCalcLastReading = Number(consumptionWaterByCalcLastReading)*Number(tarifsArray[element.type-1].water)
+                                    let queryNewAccuralWatherbyLastCalculated = `INSERT INTO accrual (personal_account_id_accrual, date, service, previous_reading, curent_reading, consumption,
+                                        tarif, accural_sum, personal_account_type, author_create, type)
+                                        VALUES ('${element.id_personal_account}', '${formatDate(new Date)}', '${"Водопостачання"}','${lastCalculatedReading[0].reading}'
+                                        ,'${meter.last_readinng}', '${consumptionWaterByCalcLastReading}', '${tarifsArray[element.type-1].water}','${accuralSumWaterByCalcLastReading}',
+                                        '${element.type}','${user.name}','${"Авто"}');`;
+                                        await connection.query(queryNewAccuralWatherbyLastCalculated, async(err, resultNewAccuralWatherbyLastCalculated) => {
+                                            if (err) {
+                                                console.log("internal error", err);
+                                                return;
+                                            }
+                                        });
+                                        personallAccuralSum+=accuralSumWaterByCalcLastReading;
+
+                                        ////calculate all redings
+                                        let queryCalculateAllReadingsByMeter= `UPDATE readings
+                                        SET calculated = 1, calculated_date = '${formatDate(new Date)}'
+                                        WHERE readings.id_meter_reading = ${meter.id_meters} AND readings.calculated =0`;
+                                        await connection.query(queryCalculateAllReadingsByMeter, async(err, resultCalculateAllReadingsByMeter) => {
+                                            if (err) {
+                                                console.log("internal error", err);
+                                                return;
+                                            }
+                                        });
+                                }else{
+                                    listOfErrors+=`Помилка: рахунок ${element.personal_account} лічиник сер.ном ${meter.serial_number} відємне або нульове споживання! `+'\n'
+                                    errorsCounter.Водопостачання++;
+                                    errorsCounter.Лічильники.push(meter.id_meters);
+                                }
+                            }else{
+                                let querylastNotCalculatedReading= `SELECT * FROM readings
+                                where readings.id_meter_reading = ${meter.id_meters} AND readings.calculated ='0' ORDER BY readings.id_reading ASC LIMIT 1;`;
+                                await connection.query(querylastNotCalculatedReading, async(err, resultNotCalculatedReading) => {
+                                    if (err) {
+                                        console.log("internal error", err);
+                                        return;
+                                    }
+                                    let lastNotCalculatedReading = JSON.parse(JSON.stringify(resultNotCalculatedReading));
+                                    if(lastNotCalculatedReading.length!=0){
+                                        let consumptionWaterByNotCalcLastReading = Number(meter.last_readinng) - Number(lastNotCalculatedReading[0].reading);
+                                        if(consumptionWaterByNotCalcLastReading>0){
+                                            
+                                            consumptionForDrinage+=consumptionWaterByNotCalcLastReading;
+                                            console.log('-'+consumptionForDrinage)
+                                            let accuralSumWaterByNotCalcLastReading = Number(consumptionWaterByNotCalcLastReading)*Number(tarifsArray[element.type-1].water)
+                                            let queryNewAccuralWatherbyLastNotCalculated = `INSERT INTO accrual (personal_account_id_accrual, date, service, previous_reading, curent_reading, consumption,
+                                                tarif, accural_sum, personal_account_type, author_create, type)
+                                                VALUES ('${element.id_personal_account}', '${formatDate(new Date)}', '${"Водопостачання"}','${lastNotCalculatedReading[0].reading}'
+                                                ,'${meter.last_readinng}', '${consumptionWaterByNotCalcLastReading}', '${tarifsArray[element.type-1].water}','${accuralSumWaterByNotCalcLastReading}',
+                                                '${element.type}','${user.name}','${"Авто"}');`;
+                                                await connection.query(queryNewAccuralWatherbyLastNotCalculated, async(err, resultNewAccuralWatherbyLastNotCalculated) => {
+                                                    if (err) {
+                                                        console.log("internal error", err);
+                                                        return;
+                                                    }
+                                                });
+                                                personallAccuralSum+=accuralSumWaterByNotCalcLastReading;
+                                                listOfErrors+=`Увага: рахунок ${element.personal_account} лічиник сер.ном ${meter.serial_number} нарахування здійснено без попередньо обрахованих покахників! `+'\n'
+                                                ////calculate all redings 
+                                                let queryCalculateAllReadingsByMeter= `UPDATE readings
+                                                SET calculated = 1, calculated_date = '${formatDate(new Date)}'
+                                                WHERE readings.id_meter_reading =${meter.id_meters} AND readings.calculated =0`;
+                                               await connection.query(queryCalculateAllReadingsByMeter, async(err, resultCalculateAllReadingsByMeter) => {
+                                                    if (err) {
+                                                        console.log("internal error", err);
+                                                        return;
+                                                    }
+                                                });
+                                        }else{
+                                            listOfErrors+=`Помилка: рахунок ${element.personal_account} лічиник сер.ном ${meter.serial_number} відємне або нульове споживання! `+'\n'
+                                            errorsCounter.Водопостачання++;
+                                            errorsCounter.Лічильники.push(meter.id_meters);
+                                        }
+                                    }else{
+                                        listOfErrors+=`Помилка: рахунок ${element.personal_account} лічиник сер.ном ${meter.serial_number} немає показників для нарахування `+'\n'  
+                                        errorsCounter.Водопостачання++;
+                                        errorsCounter.Лічильники.push(meter.id_meters);
+                                    }
+                                });
+                            }
+                        });
+                        
+                    }
+                }
+                await checkDrinage();
+                }else{
+                    listOfErrors+=`Помилка: рахунок ${element.personal_account} немає лічильників для нарахування за водопостачання! `+'\n'
+                    errorsCounter.Водопостачання++;
+                }
+                
+                });
+                
+            }
+            async function checkDrinage(){
+            if(serviceList.includes("Водовідведення")&&(marksOfErrors===null||marksOfErrors.Водовідведення!==0)){
+                console.log('q'+consumptionForDrinage)
+                if(consumptionForDrinage>0){
+                    console.log('g'+consumptionForDrinage)
+                    let accuralSumDrinage = Number(consumptionForDrinage)*Number(tarifsArray[element.type-1].drainage)
+                    let queryNewAccuralDrinage = `INSERT INTO accrual (personal_account_id_accrual, date, service, consumption
+                        tarif, accural_sum, personal_account_type, author_create, type)
+                        VALUES ('${element.id_personal_account}', '${formatDate(new Date)}', '${"Водовідведення"}', '${consumptionForDrinage}',
+                        '${tarifsArray[element.type-1].drainage}', '${accuralSumDrinage}',
+                        '${element.type}','${user.name},${'Авто'}');`;
+                         await connection.query(queryNewAccuralDrinage, async(err, resultNewAccuralWatherbyLastCalculated) => {
+                            if (err) {
+                                console.log("internal error", err);
+                                return;
+                            }
+                            console.log('qqqq')
+                        });
+                        personallAccuralSum+=accuralSumDrinage;
+                }else{
+                    listOfErrors+=`Помилка: рахунок ${element.personal_account} немає споживання води для нарахування за водовідведення! `+'\n'
+                    errorsCounter.Водовідведення++;
+                }
+            }
+            }
+            
+            ///personalAcount balance change
+
+            let updateBalance = 
+            `UPDATE personal_accounts
+            SET balance = balance - '${Number(personallAccuralSum)}'
+            WHERE id_personal_account = '${element.id_personal_account}'`;
+            await connection.query(updateBalance, async(err, result) => {
+              if (err) {
+                  console.log("internal error", err);
+                  return;
+              }
+            });
+
+            
+        
+            
+        }
+        let queryErors= `UPDATE personal_accounts
+        SET accural_status = '${JSON.stringify(errorsCounter)}'
+        WHERE personal_accounts.id_personal_account = '${element.id_personal_account}'`;
+        connection.query(queryErors, async(err, resultErors) => {
+            if (err) {
+                console.log("internal error", err);
+                return;
+            }
+        });
+        }
+        ///out
+        listOfErrors+='Автоматичні нарахування завершені';
+        res.attachment(`автоматичні нарахування ${formatDate(new Date)}.txt`)
+        res.type('txt')
+        res.send(listOfErrors);
+
+    });
+}); 
+
+
+
 }
 
 

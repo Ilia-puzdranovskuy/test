@@ -2,6 +2,10 @@ const config = require('../config');
 
 let jwt = require("jsonwebtoken");
 
+let LiqPay = require('../liqpay/liqpay');
+var liqpay = new LiqPay(config.pulic_liqpay, config.private_liqpay);
+
+
 exports.entry = async (req, res) => {
     if(isAuth(req,res)){
         return
@@ -195,6 +199,78 @@ exports.addPersAcWeb = async (req, res) => {
       }
 
     })
+
+}
+
+///////payments
+
+exports.payments  = async (req, res) => {
+  if(isAuth(req,res)){
+      return
+  }
+  const token = req.cookies.token
+  let payload = jwt.verify(token, config.secret);
+
+  let curentHome = req.query.curentHome;
+
+  let query = `SELECT personal_accounts.street,personal_accounts.house,personal_accounts.apartment,personal_accounts.settlement,personal_accounts.personal_account
+  FROM (web_accounts  
+  INNER JOIN personal_accounts ON web_accounts.id_web_accounts =personal_accounts.web_account_id)
+  WHERE web_accounts.id_web_accounts = ${payload.id}
+  ORDER BY personal_accounts.personal_account`;
+  
+    connection.query(query, async(err, result) => {
+      if (err) {
+          console.log("internal error", err);
+          return;
+      }
+      let parseRes = JSON.parse(JSON.stringify(result));
+      if(curentHome == undefined) curentHome = parseRes[0].personal_account
+      
+      //payments
+      let paymentsQuery = `SELECT  payments.*
+      FROM ((web_accounts  
+      INNER JOIN personal_accounts ON web_accounts.id_web_accounts =personal_accounts.web_account_id)
+      INNER JOIN payments ON personal_accounts.id_personal_account =payments.personal_account)
+      WHERE web_accounts.id_web_accounts ='${payload.id}' AND personal_accounts.personal_account = '${curentHome}'`;
+      //metters
+      connection.query(paymentsQuery, async(err, resultpayments) => {
+        if (err) {
+            console.log("internal error", err);
+            return;
+        }
+        let parseResPayments = JSON.parse(JSON.stringify(resultpayments));
+        console.log(resultpayments)
+
+        //accurals
+        let accuralsQuery = `SELECT  accrual.*
+      FROM ((web_accounts  
+      INNER JOIN personal_accounts ON web_accounts.id_web_accounts =personal_accounts.web_account_id)
+      INNER JOIN accrual ON personal_accounts.id_personal_account =accrual.personal_account_id_accrual)
+      WHERE web_accounts.id_web_accounts ='${payload.id}' AND personal_accounts.personal_account = '${curentHome}'`;
+      //metters
+      connection.query(accuralsQuery, async(err, resultaccurals) => {
+        if (err) {
+            console.log("internal error", err);
+            return;
+        }
+        let parseResaccurals = JSON.parse(JSON.stringify(resultaccurals));
+        console.log(resultaccurals)
+
+        
+        res.render("accountPages/paymentsPage",{homeAllInf:parseRes,curentURLPlace:"/personal-account/payments",param:curentHome,payments:parseResPayments,accurals:parseResaccurals});
+      });
+      });
+
+
+
+      
+    });
+          
+
+     
+
+
 
 }
 

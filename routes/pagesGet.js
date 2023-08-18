@@ -49,6 +49,8 @@ router.get("/personal-account",personalAccountController.entry);
 
 router.get("/personal-account/readings",personalAccountController.readingsPage);
 
+router.get("/personal-account/payments",personalAccountController.payments);
+
 router.get("/personal-account/add-persAc",personalAccountController.addPersAcPage);
 
 // router.get("/personal-account/payments",personalAccountController.calculationPage);

@@ -13,6 +13,7 @@
           <table class="search-result-table">
             <thead>
               <tr>
+                <th>Послуга</th>
                 <th>Сума</th>
                 <th>Дата</th>
                 <th>Джерело</th>
@@ -162,19 +163,18 @@
               <th>Дата</th>
               <th>Початковий показник</th>
               <th>Кінцевий показник</th>
-              <th>Спожив. води</th>
-              <th>Нарах. вода</th>
-              <th>Спожив. водовідвед.</th>
-              <th>Нарах. водовідвед.</th>
+              <th>Послуга</th>
+              <th>Споживання</th>
+              <th>Тариф</th>
               <th>Кільк.людей</th>
-              <th>Нарах. вивізсм.</th>
-              <th>Сума</th>
-              <th>Тип особ.рах</th>
-              <th>Автор нарах.</th>
+              <th>Сумма</th>
+              <th>Тип.рах</th>
+              <th>Автор</th>
+              <th>Тип </th>
             </tr>
           </thead>
           <tbody>
-            <% for(var i=1; i < accurals.length; i+=2) { %>
+            <% for(var i=1; i < accurals.length; i++) { %>
               <tr>
 
                 <% if(accurals[i].id_accrual!= undefined){ %>
@@ -189,76 +189,65 @@
                   <td>Невідомо</td>
                 <% } %>
 
-                <% if(accurals[i-1].reading!= undefined){ %>
-                  <td>
-                    Показник: <%= accurals[i-1].reading %><br>
-                    Дата: <%=moment(  accurals[i-1].reading_date).format("YYYY-MM-D")%><br>
-                    Джерело: <%= accurals[i-1].source %>
-                  </td>
+                <% if(accurals[i].previous_reading!= undefined){ %>
+                  <td><%=accurals[i].previous_reading%></td>
                 <% }else{ %>
                   <td>Невідомо</td>
                 <% } %>
 
-                <% if(accurals[i].reading!= undefined){ %>
-                  <td>
-                    Показник: <%= accurals[i].reading %><br>
-                    Дата: <%=moment(  accurals[i].reading_date).format("YYYY-MM-D")%><br>
-                    Джерело: <%= accurals[i].source %>
-                  </td>
+                <% if(accurals[i].curent_reading!= undefined){ %>
+                  <td><%=accurals[i].curent_reading%></td>
                 <% }else{ %>
                   <td>Невідомо</td>
                 <% } %>
 
-                <% if(accurals[i].consumption_water!= undefined){ %>
-                  <td><%= accurals[i].consumption_water %></td>
+                <% if(accurals[i].service!= undefined){ %>
+                  <td><%= accurals[i].service %></td>
                 <% }else{ %>
                   <td>Невідомо</td>
                 <% } %>
 
-                <% if(accurals[i].accrual_water!= undefined){ %>
-                  <td><%= accurals[i].accrual_water %></td>
+                <% if(accurals[i].consumption!= undefined){ %>
+                  <td><%= accurals[i].consumption %></td>
                 <% }else{ %>
                   <td>Невідомо</td>
                 <% } %>
 
-                <% if(accurals[i].consumption_drainage!= undefined){ %>
-                  <td><%= accurals[i].consumption_drainage %></td>
+                <% if(accurals[i].tarif!= undefined){ %>
+                  <td><%= accurals[i].tarif %></td>
                 <% }else{ %>
                   <td>Невідомо</td>
                 <% } %>
 
-                <% if(accurals[i].accrual_drainage!= undefined){ %>
-                  <td><%= accurals[i].accrual_drainage %></td>
+               
+
+                <% if(accurals[i].num_people!= undefined){ %>
+                  <td><%= accurals[i].num_people %></td>
                 <% }else{ %>
                   <td>Невідомо</td>
                 <% } %>
 
-                <% if(accurals[i].number_of_people!= undefined){ %>
-                  <td><%= accurals[i].number_of_people %></td>
+
+                <% if(accurals[i].accural_sum!= undefined){ %>
+                  <td><%= accurals[i].accural_sum %></td>
                 <% }else{ %>
                   <td>Невідомо</td>
                 <% } %>
 
-                <% if(accurals[i].accrual_rubbish!= undefined){ %>
-                  <td><%= accurals[i].accrual_rubbish %></td>
+                <% if(accurals[i].personal_account_type!= undefined){ %>
+                  <td><%= accurals[i].personal_account_type %></td>
                 <% }else{ %>
                   <td>Невідомо</td>
                 <% } %>
 
-                <% if(accurals[i].sum!= undefined){ %>
-                  <td><%= accurals[i].sum %></td>
+                <% if(accurals[i].author_create!= undefined){ %>
+                  <td><%= accurals[i].author_create %></td>
                 <% }else{ %>
                   <td>Невідомо</td>
                 <% } %>
 
-                <% if(accurals[i].personal_account_type== "1"){ %>
-                  <td>Юрид</td>
-                <% }else{ %>
-                  <td>ФОП</td>
-                <% } %>
-
-                <% if(accurals[i].author!= undefined){ %>
-                  <td><%= accurals[i].author %></td>
+                <% if(accurals[i].type!= undefined){ %>
+                  <td><%= accurals[i].type %></td>
                 <% }else{ %>
                   <td>Невідомо</td>
                 <% } %>

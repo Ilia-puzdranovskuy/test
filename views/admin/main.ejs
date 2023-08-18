@@ -147,17 +147,7 @@
                     <% } %>
 
                     <% if(personalAccounts[i].accural_status!= undefined&&personalAccounts[i].accural_status!==''){ %>
-                      <% if(personalAccounts[i].accural_status=="Руч"){ %>
-                        <td style="background-color: red;"><%=personalAccounts[i].accural_status %></td>
-                      <% }%>
-
-                      <% if(personalAccounts[i].accural_status=="Усп"){ %>
-                        <td style="background-color: green;"><%=personalAccounts[i].accural_status %></td>
-                      <% }%>
-
-                      <% if(personalAccounts[i].accural_status=="Авт"){ %>
                         <td style="background-color: yellow;"><%=personalAccounts[i].accural_status %></td>
-                      <% }%>
                     <% }else{ %>
                       <td>-</td>
                     <% } %>
