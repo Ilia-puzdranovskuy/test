@@ -2,7 +2,7 @@ module.exports = {
     //DB
 hostDB     : 'localhost',
 userDB    : 'user',
-passwordDB : '1q2w3e4r5t6y',
+passwordDB : 'Password123#@!',
 databaseDB : 'municipal_enterprise',
     //mail
     mailService: 'gmail',
@@ -12,7 +12,7 @@ databaseDB : 'municipal_enterprise',
     secret: "secret-key",
     cookieSecret: "secret-key",
     admin_secret:'admin-key',
-    telBotToken:'6261809451:AAHyqJuA8CU4I1IEdmkw_n2jr-5XHM8kz2E',
+    telBotToken:'6315758884:AAHLYoIzyNYbDe0nOachV1rIW-Orfc1MVEg',
     domain: "localhost:5000",
     urlIndex:'https://www.google.com/',
     ///liqpay
