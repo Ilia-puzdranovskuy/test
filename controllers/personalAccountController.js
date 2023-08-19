@@ -1,5 +1,5 @@
 const config = require('../config');
-
+let uniquID = require('generate-unique-id');
 let jwt = require("jsonwebtoken");
 
 let LiqPay = require('../liqpay/liqpay');
@@ -46,13 +46,13 @@ exports.entry = async (req, res) => {
               return;
           }
           let parseResNews = JSON.parse(JSON.stringify(result));
-
+          let idpay = uniquID()
           var html = liqpay.cnb_form({
             'action'         : 'pay',
             'amount'         : '1',
             'currency'       : 'UAH',
             'description'    : 'description text',
-            'order_id'       : 'order_id_1',
+            'order_id'       : idpay,
             'version'        : '3',
             'result_url'     : 'https://test-illia-vds.fun/personal-account',
             'server_url'     : 'https://test-illia-vds.fun/liqpay-payments'
