@@ -11,7 +11,7 @@ const crypto = require('crypto');
 exports.newLiqPayPayment  = async (req, res) => {
   console.log(req.body);
   console.log('////////////////////////');
-  console.log('sign:'+liqpay.base64_encode( crypto.sha1( private_liqpay + req.body.data + private_liqpay ) ))
+  // console.log('sign:'+liqpay.base64_encode( crypto.sha1( private_liqpay + req.body.data + private_liqpay ) ))
   console.log(liqpay.str_to_sign(private_liqpay+req.body.data+pulic_liqpay))
   
 }
