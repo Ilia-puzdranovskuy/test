@@ -5,15 +5,15 @@ let jwt = require("jsonwebtoken");
 let LiqPay = require('../liqpay/liqpay');
 const { private_liqpay, pulic_liqpay } = require('../config');
 var liqpay = new LiqPay(config.pulic_liqpay, config.private_liqpay);
-
+const crypto = require('crypto');
 
 
 exports.newLiqPayPayment  = async (req, res) => {
   console.log(req.body);
   console.log('////////////////////////');
-  console.log('sign:'+liqpay.base64_encode( sha1( private_liqpay + req.body.data + private_liqpay ) ))
+  console.log('sign:'+liqpay.base64_encode( crypto.sha1( private_liqpay + req.body.data + private_liqpay ) ))
   console.log(liqpay.str_to_sign(private_liqpay+req.body.data+pulic_liqpay))
-
+  
 }
 
 
