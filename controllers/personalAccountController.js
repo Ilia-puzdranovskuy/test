@@ -3,7 +3,16 @@ const config = require('../config');
 let jwt = require("jsonwebtoken");
 
 let LiqPay = require('../liqpay/liqpay');
+const { private_liqpay, pulic_liqpay } = require('../config');
 var liqpay = new LiqPay(config.pulic_liqpay, config.private_liqpay);
+
+
+
+exports.newLiqPayPayment  = async (req, res) => {
+  console.log(req.body);
+console.log(liqpay.str_to_sign(private_liqpay+req.body+pulic_liqpay))
+
+}
 
 
 exports.entry = async (req, res) => {
@@ -37,7 +46,19 @@ exports.entry = async (req, res) => {
               return;
           }
           let parseResNews = JSON.parse(JSON.stringify(result));
-          res.render("accountPages/personalAccount",{homeAllInf:parseRes,curentURLPlace:"/personal-account",param:curentHome,news:parseResNews});
+
+          var html = liqpay.cnb_form({
+            'action'         : 'pay',
+            'amount'         : '1',
+            'currency'       : 'UAH',
+            'description'    : 'description text',
+            'order_id'       : 'order_id_1',
+            'version'        : '3',
+            'result_url'     : 'https://test-illia-vds.fun/personal-account',
+            'server_url'     : 'https://test-illia-vds.fun/liqpay-payments'
+            });
+
+          res.render("accountPages/personalAccount",{homeAllInf:parseRes,curentURLPlace:"/personal-account",param:curentHome,news:parseResNews,pay:html});
         });
       });
 
@@ -273,6 +294,8 @@ exports.payments  = async (req, res) => {
 
 
 }
+
+
 
 
 

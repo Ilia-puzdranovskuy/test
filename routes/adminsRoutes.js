@@ -85,6 +85,15 @@ router.post("/auto-accurals-clear-marks",adminController.autoAccrualsClearMarks)
 
 
 
+router.get("/paymentAndReadingsFast",adminController.fastPayAndRead);
+router.post("/payment-fast-one",adminController.fastPayPostOne);
+router.post("/payment-fast-all",adminController.fastPayPostAll);
+
+router.get("/readingsFast",adminController.fastRead);
+router.post("/reading-fast-one",adminController.fastReadPostOne);
+router.post("/reading-fast-all",adminController.fastReadingsPostAll);
+
+
 
 
 module.exports = router;

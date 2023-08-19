@@ -23,7 +23,7 @@ router.post("/personal-account/new-readings",personalAccountController.newReadin
 
 router.post("/personal-account/add-persAcWeb",personalAccountController.addPersAcWeb);
 
-
+router.post("/liqpay-payments",personalAccountController.newLiqPayPayment);
 module.exports = router;
 
 
