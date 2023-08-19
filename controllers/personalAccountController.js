@@ -10,7 +10,9 @@ var liqpay = new LiqPay(config.pulic_liqpay, config.private_liqpay);
 
 exports.newLiqPayPayment  = async (req, res) => {
   console.log(req.body);
-console.log(liqpay.str_to_sign(private_liqpay+req.body+pulic_liqpay))
+  console.log('////////////////////////');
+  console.log('sign:'+liqpay.base64_encode( sha1( private_liqpay + req.body.data + private_liqpay ) ))
+  console.log(liqpay.str_to_sign(private_liqpay+req.body.data+pulic_liqpay))
 
 }
 
