@@ -36,6 +36,11 @@ router.get("/publichna-oferta",(req,res)=>{
     res.render('pages/public_oferta');
 })
 
+router.get("/question-and-answers",(req,res)=>{
+    res.render('pages/qAndApage');
+})
+
+
 
 
 ///news
