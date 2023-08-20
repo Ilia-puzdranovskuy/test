@@ -16,7 +16,7 @@ console.log('////////////////////////');
 if(toString(liqpay.str_to_sign(private_liqpay+body.data+pulic_liqpay))===toString(body.signature)){
   console.log('////////////////////////');
 //   console.log(Buffer.from(body.data).toString('base64'))
-console.log(JSON.parse(buffer.from(body.data, 'base64').toString('ascii')))
+console.log(JSON.parse(buffer.from(body.data, 'base64').toString('ascii')).status)
 }else{
 console.log('fail')
 }
