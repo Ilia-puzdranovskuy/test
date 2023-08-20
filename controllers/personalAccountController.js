@@ -14,7 +14,9 @@ exports.newLiqPayPayment  = async (req, res) => {
   console.log('////////////////////////');
     if(await toString(liqpay.str_to_sign(private_liqpay+req.body.data+pulic_liqpay))===toString(req.body.signature)){
       console.log('////////////////////////');
-      let parsedata = await JSON.parse(await buffer.from(req.body.data, 'base64').toString('ascii'));
+
+
+      let parsedata = await JSON.parse(await async function(){return await buffer.from(req.body.data, 'base64').toString('ascii')})
       if(parsedata.status === 'success'){
             let persAcId = req.query.id
             let updateBalance = `UPDATE personal_accounts SET balance = balance + '${Number(parsedata.amount)}' WHERE id_personal_account = '${persAcId}'`;
