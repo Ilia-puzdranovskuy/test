@@ -9,7 +9,7 @@ const crypto = require('crypto');
 exports.newLiqPayPayment  = async (req, res) => {
   console.log(req.body);
   console.log('////////////////////////');
-    if(liqpay.str_to_sign(private_liqpay+req.body.data+pulic_liqpay)===req.body.signature){
+    if(await toString(liqpay.str_to_sign(private_liqpay+req.body.data+pulic_liqpay))===toString(req.body.signature)){
       console.log('////////////////////////');
       console.log(Buffer.from(req.body.data).toString('base64'))
   }else{
