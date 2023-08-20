@@ -86,10 +86,13 @@ exports.entry = async (req, res) => {
               'result_url'     : `https://test-illia-vds.fun/personal-account`,
               'server_url'     : `https://test-illia-vds.fun/liqpay-payments?id=${parseRes.id_personal_account}`
               });
+              res.render("accountPages/personalAccount",{homeAllInf:parseRes,curentURLPlace:"/personal-account",param:curentHome,news:parseResNews,pay:html});
+          }else{
+            res.render("accountPages/personalAccount",{homeAllInf:parseRes,curentURLPlace:"/personal-account",param:curentHome,news:parseResNews,pay:html});
           }
 
 
-          res.render("accountPages/personalAccount",{homeAllInf:parseRes,curentURLPlace:"/personal-account",param:curentHome,news:parseResNews,pay:html});
+          
         });
       });
 
