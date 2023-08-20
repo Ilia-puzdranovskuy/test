@@ -1,5 +1,6 @@
 
 const config = require('../config');
+const fs = require('fs');
 
 let jwt = require("jsonwebtoken");
 let bcrypt = require("bcryptjs");
@@ -913,6 +914,7 @@ exports.deactivateNews= async (req, res) => {
 }
 
 let telegramBot = require('../telegramBot/telBot');
+const { ifError } = require('assert');
 
 exports.telegramNews= async (req, res) => {
     if(isAuth(req,res)){
@@ -1181,7 +1183,8 @@ exports.autoAccrualsPost= async (req, res) => {
             return;
         }
         let parseResListPersonalAccounts = JSON.parse(JSON.stringify(result));
-        let iters = parseResListPersonalAccounts.length;
+        let iters = 0;
+        let len = parseResListPersonalAccounts.length;
         for await (const element of parseResListPersonalAccounts) {
             
             // const element = parseResListPersonalAccounts[i];
@@ -1215,22 +1218,26 @@ exports.autoAccrualsPost= async (req, res) => {
                                 }
                                 personallAccuralSum+=rubbishAccurallSum;
                                 console.log('rub'+ personallAccuralSum)
-                                return await checkWather()
+                                 await checkWather()
                             });
                         }else{
                             listOfErrors+=`Помилка: рахунок ${element.personal_account} невірна кількість людей для нарахування за вивіз сміття! `+'\n'
                             errorsCounter.Сміття++;
-                            return await checkWather()
+                             await checkWather()
                         }
         
                     }else{
-                        return await checkWather()  
+                         await checkWather()  
                     }
                 }
                 
                 ///accural wather
                 async function checkWather(){
-                    if(serviceList.includes("Водопостачання")&&(marksOfErrors===null||marksOfErrors.Водопостачання!==0)){
+                    // if(element.id_personal_account=='1000'){
+                    //     console.log('/////')
+                    //     console.log(errorsCounter)
+                    // }
+                    if(serviceList.includes("Водопостачання")&&(marksOfErrors===null||marksOfErrors.Водопостачання!=0)){
                         let queryMetersOfPersonalAc= `SELECT * FROM meters
                         where meters.personal_account_id = ${element.id_personal_account} AND meters.status !='Неактивний';`;
                         await connection.query(queryMetersOfPersonalAc, async(err, resultMeters) => {
@@ -1291,11 +1298,14 @@ exports.autoAccrualsPost= async (req, res) => {
                                                     }else{
                                                         listOfErrors+=`Помилка: рахунок ${element.personal_account} лічиник сер.ном ${meter.serial_number} відємне або нульове споживання! `+'\n'
                                                         errorsCounter.Водопостачання++;
+                                                        errorsCounter.Водовідведення++;
                                                         errorsCounter.Лічильники.push(meter.id_meters);
                                                         // return await checkDrinage()
+                                                        
                                                         if (!--iterations){
                                                             await checkDrinage()     
-                                                        }
+                                                        } 
+                                                        
                                                     }
                                                 }else{
                                                     let querylastNotCalculatedReading= `SELECT * FROM readings
@@ -1335,9 +1345,11 @@ exports.autoAccrualsPost= async (req, res) => {
                                                                                 return;
                                                                             }
                                                                             // return await checkDrinage()
+                                                                            
                                                                             if (!--iterations){
                                                                                 await checkDrinage()     
-                                                                            }
+                                                                            }    
+                                                                            
                                                                         });
         
                                                                     
@@ -1346,25 +1358,36 @@ exports.autoAccrualsPost= async (req, res) => {
                                                             }else{
                                                                 listOfErrors+=`Помилка: рахунок ${element.personal_account} лічиник сер.ном ${meter.serial_number} відємне або нульове споживання! `+'\n'
                                                                 errorsCounter.Водопостачання++;
+                                                                errorsCounter.Водовідведення++;
                                                                 errorsCounter.Лічильники.push(meter.id_meters);
+                                                
                                                                 // return await checkDrinage()
+                                                                
                                                                 if (!--iterations){
                                                                     await checkDrinage()     
-                                                                }
+                                                                }   
+                                                                
                                                             }
                                                         }else{
                                                             listOfErrors+=`Помилка: рахунок ${element.personal_account} лічиник сер.ном ${meter.serial_number} немає показників для нарахування `+'\n'  
                                                             errorsCounter.Водопостачання++;
+                                                            errorsCounter.Водовідведення++;
                                                             errorsCounter.Лічильники.push(meter.id_meters);
                                                             // return await checkDrinage()
+                                                            
                                                             if (!--iterations){
                                                                 await checkDrinage()     
-                                                            }
+                                                            }  
+                                                            
                                                         }
                                                     });
                                                 }
                                             });
                                             
+                                        }else{
+                                            if (!--iterations){
+                                                await checkDrinage()     
+                                            }  
                                         }
 
                                 }
@@ -1374,6 +1397,7 @@ exports.autoAccrualsPost= async (req, res) => {
                         }else{
                             listOfErrors+=`Помилка: рахунок ${element.personal_account} немає лічильників для нарахування за водопостачання! `+'\n'
                             errorsCounter.Водопостачання++;
+                            
                             return await checkDrinage();
                         }
                         
@@ -1384,7 +1408,11 @@ exports.autoAccrualsPost= async (req, res) => {
                     }
                 }
                 async function checkDrinage(){
-                if(serviceList.includes("Водовідведення")&&(marksOfErrors===null||marksOfErrors.Водовідведення!==0)){
+                    // if(element.id_personal_account=='1000'){
+                    //     console.log('/////')
+                    //     console.log(errorsCounter)
+                    // }
+                if(serviceList.includes("Водовідведення")&&(marksOfErrors===null||marksOfErrors.Водовідведення!=0)){
                     console.log('q'+consumptionForDrinage)
                     if(consumptionForDrinage>0){
                         console.log('g'+consumptionForDrinage)
@@ -1434,6 +1462,11 @@ exports.autoAccrualsPost= async (req, res) => {
         
 
             async function errorsMarksUpdate (){
+                if(element.id_personal_account=='1000'){
+                    console.log('/////')
+                    console.log(errorsCounter)
+                }
+                // console.log(element.id_personal_account)
                 let queryErors= `UPDATE personal_accounts
                 SET accural_status = '${JSON.stringify(errorsCounter)}'
                 WHERE personal_accounts.id_personal_account = '${element.id_personal_account}'`;
@@ -1442,18 +1475,29 @@ exports.autoAccrualsPost= async (req, res) => {
                         console.log("internal error", err);
                         return;
                     }
-                    if(!--iters){
-                        listOfErrors+='Автоматичні нарахування завершені';
-                        res.attachment(`автоматичні нарахування ${formatDate(new Date)}.txt`)
-                        res.type('txt')
-                        res.send(listOfErrors);
+                    iters+=1;
+                    // console.log(iters)
+                    if(iters+1==len){
+                        
+                        console.log(11111111)
+                        // listOfErrors+='Автоматичні нарахування завершені';
+                        // res.attachment(`автоматичні нарахування ${formatDate(new Date)}.txt`)
+                        // res.type('txt')
+                        // res.send(listOfErrors);
+
+                        try {
+                            fs.writeFileSync('./autostatus.txt',listOfErrors);
+                            // file written successfully
+                          } catch (err) {
+                            console.error(err);
+                          }
+
+                        res.download('./autostatus.txt')
                     }
                 });
             }
         }
         ///out
-
-
     });
 }); 
 
