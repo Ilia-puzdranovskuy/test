@@ -10,47 +10,13 @@
     <main class="">
       <div class="p-1 text-danger"><h5>Автоматичне нарахування </h5><h5 style="color: blue;"><%= errors%></h5></div>
       <div class="block-bg mw-100">
-        <form onsubmit="return confirm('Ви впевнені, що хочете здіснити маркування?')" method="post" action="/admin-panel-controll/auto-accural-check">
-          <div class="mb-3">
-            <label for="dateFrom" class="form-label">Перевірка перед автоматичним нарахуванням :</label><br>
-            <label for="dateTo" class="form-label">Виберіть день з якого будуть прийматися показники відповідного місяця за яким буде проводитися нарахування</label>
-            <input type="date" class="form-control" id="dateFrom" name="dateFrom" required>
-            <label for="dateTo" class="form-label">Виберіть день до якого будуть прийматися показники відповідного місяця за яким буде проводитися нарахування</label>
-            <input type="date" class="form-control" id="dateTo" name="dateTo" required>
-          </div>
-          <button type="submit" class="btn btn-primary">Здійснити маркування для нарахувань</button>
-          
-        </form>
+
         <form method="post" onsubmit="return confirm('Ви впевнені, що хочете очистити маркування?')" action="/admin-panel-controll/auto-accurals-clear-marks"><button type="submit" class="btn btn-danger">Очистити маркування для нарахувань</button></form>
       
-        <form method="post" onsubmit="return confirm('Ви впевнені, що хочете здійснити автоматичне нарахування')" action="/admin-panel-controll//auto-accurals-post"><button type="submit" class="btn btn-danger">нарахуваня</button></form>
+        <form method="post" onsubmit="return confirm('Ви впевнені, що хочете здійснити автоматичне нарахування')" action="/admin-panel-controll//auto-accurals-post"><button type="submit" class="btn btn-danger">Автоматичне нарахуваня</button></form>
       
       </div>
-      <div class="block-bg mw-100" id="auditPDf">
-        <div class="p-1 text-danger"><h5 id="nameFile">Інформація по автоматичним нарахуванням</h5></div>
-                <div  id="table-wrapper">
-                    <div id="table-scroll">
-                        <table class="w-100 search-result-table" >
-                          <thead>
-                            <tr>
-                              <th>Особ.рах</th>
-                              <th>Сума</th>
-                              <th>Статус</th>
-                              <th>Дата</th>
-                              <th>Джерело</th>
-                              <th>Тип розрах.</th>
-                              <th>Індифікатор</th>
-                              <th>Автор</th>
-                            </tr>
-                          </thead>
-                          <tbody id="tblbody">
-          
-
-                          </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+     
     </div>
 
     </main>
