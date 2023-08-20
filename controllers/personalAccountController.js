@@ -73,10 +73,10 @@ exports.entry = async (req, res) => {
               return;
           }
           let parseResNews = JSON.parse(JSON.stringify(result));
-          var html =''
+          
           if(Number(parseRes.balance)<0){
             let idpay = uniquID();
-            html = liqpay.cnb_form({
+            let html = liqpay.cnb_form({
               'action'         : 'pay',
               'amount'         : `${parseRes.balance}`,
               'currency'       : 'UAH',
@@ -88,7 +88,7 @@ exports.entry = async (req, res) => {
               });
               res.render("accountPages/personalAccount",{homeAllInf:parseRes,curentURLPlace:"/personal-account",param:curentHome,news:parseResNews,pay:html});
           }else{
-            res.render("accountPages/personalAccount",{homeAllInf:parseRes,curentURLPlace:"/personal-account",param:curentHome,news:parseResNews,pay:html});
+            res.render("accountPages/personalAccount",{homeAllInf:parseRes,curentURLPlace:"/personal-account",param:curentHome,news:parseResNews,pay:''});
           }
 
 
