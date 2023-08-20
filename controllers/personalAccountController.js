@@ -6,14 +6,14 @@ let LiqPay = require('../liqpay/liqpay');
 const { private_liqpay, pulic_liqpay } = require('../config');
 var liqpay = new LiqPay(config.pulic_liqpay, config.private_liqpay);
 const crypto = require('crypto');
-
-
 exports.newLiqPayPayment  = async (req, res) => {
   console.log(req.body);
   console.log('////////////////////////');
-  // console.log('sign:'+liqpay.base64_encode( crypto.sha1( private_liqpay + req.body.data + private_liqpay ) ))
-  console.log(liqpay.str_to_sign(private_liqpay+req.body.data+pulic_liqpay))
-  
+  let checksignature = liqpay.str_to_sign(private_liqpay+req.body.data+pulic_liqpay);
+    if(checksignature===req.body.signature){
+      Buffer.from(req.body.data).toString('base64')
+  }
+  res.status(200).send();
 }
 
 
@@ -48,7 +48,7 @@ exports.entry = async (req, res) => {
               return;
           }
           let parseResNews = JSON.parse(JSON.stringify(result));
-          let idpay = uniquID()
+          let idpay = uniquID();
           var html = liqpay.cnb_form({
             'action'         : 'pay',
             'amount'         : '1',
@@ -56,8 +56,8 @@ exports.entry = async (req, res) => {
             'description'    : 'description text',
             'order_id'       : idpay,
             'version'        : '3',
-            'result_url'     : 'https://test-illia-vds.fun/personal-account',
-            'server_url'     : 'https://test-illia-vds.fun/liqpay-payments'
+            'result_url'     : `https://test-illia-vds.fun/personal-account`,
+            'server_url'     : `https://test-illia-vds.fun/liqpay-payments?name=ferret`
             });
 
           res.render("accountPages/personalAccount",{homeAllInf:parseRes,curentURLPlace:"/personal-account",param:curentHome,news:parseResNews,pay:html});
