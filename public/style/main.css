@@ -759,12 +759,17 @@ hr{
       overflow:scroll;
      }
      
-
+     .table-pay-mob{
+      display: inline-table;
+      max-width: 100%;
+     }
   }
 
   @media only screen and (min-width: 450px) and (max-width: 599px) {
 
-
+    .headerTop{
+      height: auto;
+    }
     .mob-table {
       display: flex;
       align-items: center;
@@ -986,6 +991,9 @@ hr{
       max-width: 100%;
       overflow:scroll;
      }
+     .table-pay-mob{
+      display: inline-table;
+     }
   }
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
@@ -1131,6 +1139,10 @@ hr{
     white-space: nowrap;
     max-width: 100%;
     overflow:scroll;
+   }
+
+   .table-pay-mob{
+    display: inline-table;
    }
 }
 
