@@ -16,7 +16,7 @@ exports.newLiqPayPayment  = async (req, res) => {
       console.log('////////////////////////');
 
 
-      let parsedata = await JSON.parse(await function(){return buffer.from(req.body.data, 'base64').toString('ascii')})
+      let parsedata = await buffer.from(req.body.data, 'base64').toString('ascii').toJSON()
       if(parsedata.status === 'success'){
             let persAcId = req.query.id
             let updateBalance = `UPDATE personal_accounts SET balance = balance + '${Number(parsedata.amount)}' WHERE id_personal_account = '${persAcId}'`;
