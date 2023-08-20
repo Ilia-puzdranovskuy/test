@@ -86,13 +86,12 @@ exports.entry = async (req, res) => {
           let parseResNews = JSON.parse(JSON.stringify(result));
           console.log(parseRes[0].balance)
           if(Number(parseRes[0].balance)<0){
-            let idpay = uniquID();
             let html =await liqpay.cnb_form({
               'action'         : 'pay',
               'amount'         : `${Math.abs(parseRes[0].balance)}`,
               'currency'       : 'UAH',
               'description'    : `Оплата за комунальні послуги особовий рахунок: "${parseRes[0].personal_account} Cумма:"${Math.abs(parseRes[0].balance)}" гривень`,
-              'order_id'       : idpay,
+              'order_id'       : uniquID(),
               'version'        : '3',
               'result_url'     : `https://test-illia-vds.fun/personal-account`,
               'server_url'     : `https://test-illia-vds.fun/liqpay-payments?id=${parseRes[0].id_personal_account}`

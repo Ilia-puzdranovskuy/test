@@ -8,6 +8,9 @@
 body{
     background-color: #ffffff;
 }
+.foot{
+  
+}
 
 .headerTop{
     height: 6vh;
@@ -448,7 +451,8 @@ hr{
   }
 
   .main-news-short{
-    height: 71vh;
+    height: auto;
+    margin-bottom: 5%;
   }
   
 
@@ -1194,3 +1198,9 @@ hr{
       padding-top: 15%;
      }
    }
+
+   @media only screen and  (max-height: 900px) {
+   .footer-mobile{
+    position: relative !important;
+   }
+  }
