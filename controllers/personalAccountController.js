@@ -10,7 +10,9 @@ exports.newLiqPayPayment  = async (req, res) => {
   console.log(req.body);
   console.log('////////////////////////');
   let checksignature = liqpay.str_to_sign(private_liqpay+req.body.data+pulic_liqpay);
+  console.log(checksignature)
     if(checksignature===req.body.signature){
+      console.log('////////////////////////');
       console.log(Buffer.from(req.body.data).toString('base64'))
   }
   res.status(200).send();
