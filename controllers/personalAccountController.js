@@ -14,6 +14,8 @@ exports.newLiqPayPayment  = async (req, res) => {
     if(checksignature===req.body.signature){
       console.log('////////////////////////');
       console.log(Buffer.from(req.body.data).toString('base64'))
+  }else{
+    console.log('fail')
   }
   res.status(200).send();
 }
