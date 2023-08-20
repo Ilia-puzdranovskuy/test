@@ -2,25 +2,39 @@ const config = require('../config');
 let uniquID = require('generate-unique-id');
 let jwt = require("jsonwebtoken");
 
+var buffer = require('buffer/').Buffer;
 let LiqPay = require('../liqpay/liqpay');
 const { private_liqpay, pulic_liqpay } = require('../config');
 var liqpay = new LiqPay(config.pulic_liqpay, config.private_liqpay);
 const crypto = require('crypto');
+
+
 exports.newLiqPayPayment  = async (req, res) => {
-  
-  let query = `INSERT INTO news (header, body, date, status, image, author_create)
-  VALUES ('${'1'}', '${JSON.stringify(req.body)}', '${formatDate(new Date())}', '${"0"}', '${'1'}', '${'1'}');`;
-  connection.query(query, async(err, result) => {
-      if (err) {
-          console.log("internal error", err);
-          return;
-      }
-    })
   console.log(req.body);
   console.log('////////////////////////');
     if(await toString(liqpay.str_to_sign(private_liqpay+req.body.data+pulic_liqpay))===toString(req.body.signature)){
       console.log('////////////////////////');
-      console.log(Buffer.from(req.body.data).toString('base64'))
+      let parsedata = await JSON.parse(buffer.from(body.data, 'base64').toString('ascii'));
+      if(parsedata.status === 'success'){
+            let persAcId = req.query.id
+            let updateBalance = `UPDATE personal_accounts SET balance = balance + '${Number(parsedata.amount)}' WHERE id_personal_account = '${persAcId}'`;
+            await connection.query(updateBalance, async(err, result) => {
+              if (err) {
+                  console.log("internal error", err);
+                  return;
+              }
+
+              let newPaymentQuery = `INSERT INTO payments ( personal_account, sum, status, date_time, way, type,author_create,service,indificator) 
+              VALUES ('${persAcId}','${Number(parsedata.amount)}','${'Оброблений'}','${formatDate(new Date())}','${'Онлайн'}','${'Безготівковий'}','${'Система'}', '${'1'}', '${ parsedata.payment_id}' )`;
+              await  connection.query(newPaymentQuery, async(err, result) => {
+                  if (err) {
+                      console.log("internal error", err);
+                      return;
+                  }
+               });
+
+          });
+      }
   }else{
     console.log('fail')
   }
@@ -59,17 +73,21 @@ exports.entry = async (req, res) => {
               return;
           }
           let parseResNews = JSON.parse(JSON.stringify(result));
-          let idpay = uniquID();
-          var html = liqpay.cnb_form({
-            'action'         : 'pay',
-            'amount'         : '1',
-            'currency'       : 'UAH',
-            'description'    : 'description text',
-            'order_id'       : idpay,
-            'version'        : '3',
-            'result_url'     : `https://test-illia-vds.fun/personal-account`,
-            'server_url'     : `https://test-illia-vds.fun/liqpay-payments?name=ferret`
-            });
+          var html =''
+          if(Number(parseRes.balance)<0){
+            let idpay = uniquID();
+            html = liqpay.cnb_form({
+              'action'         : 'pay',
+              'amount'         : `${parseRes.balance}`,
+              'currency'       : 'UAH',
+              'description'    : `Оплата за комунальні послуги особовий рахунок: "${parseRes.personal_account} Cумма:"${parseRes.balance}" гривень`,
+              'order_id'       : idpay,
+              'version'        : '3',
+              'result_url'     : `https://test-illia-vds.fun/personal-account`,
+              'server_url'     : `https://test-illia-vds.fun/liqpay-payments?id=${parseRes.id_personal_account}`
+              });
+          }
+
 
           res.render("accountPages/personalAccount",{homeAllInf:parseRes,curentURLPlace:"/personal-account",param:curentHome,news:parseResNews,pay:html});
         });
