@@ -106,7 +106,7 @@ body{
     margin: auto;
     margin-top: 3rem;
     margin-bottom: 3rem;
-    height: 60vh;
+    min-height: 500px;
 }
 .image-main-container{
     position: relative;
@@ -542,7 +542,7 @@ hr{
     }
     .text-container{
       width: 80vw;
-      height: 50vh;
+      
     }
     .carousel-caption h5{
       font-size: 15px ;
@@ -643,7 +643,6 @@ hr{
      .text-container{
       width: 95%;
       margin: 4% 2.5%;
-      height: 80%;
      }
      .footer-end {
       display: flex;
