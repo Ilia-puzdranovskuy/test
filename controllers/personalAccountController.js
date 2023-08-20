@@ -76,7 +76,7 @@ exports.entry = async (req, res) => {
           
           if(Number(parseRes.balance)<0){
             let idpay = uniquID();
-            let html = liqpay.cnb_form({
+            let html =await liqpay.cnb_form({
               'action'         : 'pay',
               'amount'         : `${parseRes.balance}`,
               'currency'       : 'UAH',
