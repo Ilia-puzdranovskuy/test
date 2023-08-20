@@ -10,16 +10,16 @@ const crypto = require('crypto');
 
 
 exports.newLiqPayPayment  = async (req, res) => {
-  console.log(req.body);
   console.log('////////////////////////');
     if(await toString(liqpay.str_to_sign(private_liqpay+req.body.data+pulic_liqpay))===toString(req.body.signature)){
       console.log('////////////////////////');
 
       let buf = buffer.from(req.body.data, 'base64').toString('ascii');
       console.log(buf)
-      let parsedata = setTimeout(async () => {
-       return await JSON.parse(buf)
-      }, 5000);;
+      let parsedata;
+      setTimeout(async () => {
+        parsedata = await JSON.parse(buf)
+      }, 5000);
       console.log('////////////////////////');
       console.log(parsedata)
       if(parsedata.status === 'success'){
