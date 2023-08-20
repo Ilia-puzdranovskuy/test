@@ -18,7 +18,8 @@ exports.newLiqPayPayment  = async (req, res) => {
       setTimeout(async () => {
         parsedata = await JSON.parse(buf);
         console.log('parsed');
-      }, 5000).then(next())
+        await next();
+      }, 5000)
     async  function next(){
         console.log('////////////////////////parse');
       console.log(parsedata)
