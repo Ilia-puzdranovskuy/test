@@ -84,7 +84,7 @@ exports.searchPersAc= async (req, res) => {
 
     if(req.body.searchOption==='fullName'){
         let query = `SELECT * FROM personal_accounts
-        WHERE personal_accounts.full_name = '${req.body.searchText}'`;
+        WHERE personal_accounts.full_name LIKE '%${req.body.searchText}%'`;
         connection.query(query, async(err, result) => {
             if (err) {
                 console.log("internal error", err);
@@ -103,7 +103,7 @@ exports.searchPersAc= async (req, res) => {
 
     if(req.body.searchOption==='settlement'){
         let query = `SELECT * FROM personal_accounts
-        WHERE personal_accounts.settlement = '${req.body.searchText}'`;
+        WHERE personal_accounts.settlement LIKE '%${req.body.searchText}%'`;
         connection.query(query, async(err, result) => {
             if (err) {
                 console.log("internal error", err);
@@ -120,7 +120,7 @@ exports.searchPersAc= async (req, res) => {
     }
     if(req.body.searchOption==='street'){
         let query = `SELECT * FROM personal_accounts
-        WHERE personal_accounts.street = '${req.body.searchText}'`;
+        WHERE personal_accounts.street LIKE '%${req.body.searchText}%'`;
         connection.query(query, async(err, result) => {
             if (err) {
                 console.log("internal error", err);

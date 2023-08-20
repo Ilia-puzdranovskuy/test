@@ -60,39 +60,63 @@
                 <div class="persAc-th-cont persAc-th-cont-main w-100" >
                     <div class="th-cont-title" >Нарахування</div>
                     <div class="th-cont-body pers_ac_inf_block">
-                        <table class="w-100 readings-table" >
+                        <table class="w-100 readings-table all-readings-table" >
                             <tr>
+                            <th>Послуга</th>
                             <th>Сума</th>
                             <th>Дата</th>
-                            <th>Джерело</th>
-                            <th>Послуга</th>
+                            <th>Кількість споживачів</th>
+                            <th>Попередні показники</th>
+                            <th>Поточні показники</th>
+                            <th>Споживання</th>
+                       
                             </tr>
                             
-                                <% for(var i=0; i < payments.length; i++) { %>
+                                <% for(var i=0; i < accurals.length; i++) { %>
                                     <tr>
-
-                                        <% if(payments[i].sum != undefined){ %>
-                                            <td><%= payments[i].sum%></td>
+                                        <% if(accurals[i].service != undefined){ %>
+                                            <td><%= accurals[i].service%></td>
                                         <% }else{ %>
                                             <td>Невідомо</td>
                                         <% } %>
 
-                                        <% if(payments[i].date_time != undefined){ %>
-                                            <td><%=moment( payments[i].date_time ).format("D-MM-YYYY")%></td>
+                                        <% if(accurals[i].accural_sum != undefined){ %>
+                                            <td><%= accurals[i].accural_sum%></td>
                                         <% }else{ %>
                                             <td>Невідомо</td>
                                         <% } %>
 
-                                        <% if(payments[i].way != undefined){ %>
-                                            <td><%= payments[i].way%></td>
+                                        <% if(accurals[i].date != undefined){ %>
+                                            <td><%=moment( accurals[i].date ).format("D-MM-YYYY")%></td>
                                         <% }else{ %>
                                             <td>Невідомо</td>
                                         <% } %>
-                                        <% if(payments[i].service != undefined){ %>
-                                            <td><%= payments[i].service%></td>
+                                        
+                                        <% if(accurals[i].num_people != undefined){ %>
+                                            <td><%=accurals[i].num_people%></td>
                                         <% }else{ %>
                                             <td>Невідомо</td>
                                         <% } %>
+                                        <% if(accurals[i].previous_reading != undefined){ %>
+                                            <td><%=accurals[i].previous_reading%></td>
+                                        <% }else{ %>
+                                            <td>Невідомо</td>
+                                        <% } %>
+                                        <% if(accurals[i].curent_reading != undefined){ %>
+                                            <td><%=accurals[i].curent_reading%></td>
+                                        <% }else{ %>
+                                            <td>Невідомо</td>
+                                        <% } %>
+
+
+                                        <% if(accurals[i].consumption != undefined){ %>
+                                            <td><%=accurals[i].consumption%></td>
+                                        <% }else{ %>
+                                            <td>Невідомо</td>
+                                        <% } %>
+
+
+                               
 
                                     </tr>
                                 <% } %>

@@ -12,12 +12,12 @@ databaseDB : 'municipal_enterprise',
     secret: "secret-key",
     cookieSecret: "secret-key",
     admin_secret:'admin-key',
-    telBotToken:'6315758884:AAHLYoIzyNYbDe0nOachV1rIW-Orfc1MVEg',
+    telBotToken:'6261809451:AAHyqJuA8CU4I1IEdmkw_n2jr-5XHM8kz2E',
     domain: "localhost:5000",
     urlIndex:'https://www.google.com/',
     ///liqpay
     pulic_liqpay:'sandbox_i84420222331',
-    private_liqpay:'sandbox_t90fENjbOFrnp7jxnDGYegxB0ZXw9sFIq73ankEk'
+    private_liqpay:'6315758884:AAHLYoIzyNYbDe0nOachV1rIW-Orfc1MVEg'
 }
 
 /////123qwzxcas453AD

@@ -298,7 +298,8 @@ exports.payments  = async (req, res) => {
       FROM ((web_accounts  
       INNER JOIN personal_accounts ON web_accounts.id_web_accounts =personal_accounts.web_account_id)
       INNER JOIN payments ON personal_accounts.id_personal_account =payments.personal_account)
-      WHERE web_accounts.id_web_accounts ='${payload.id}' AND personal_accounts.personal_account = '${curentHome}'`;
+      WHERE web_accounts.id_web_accounts ='${payload.id}' AND personal_accounts.personal_account = '${curentHome}'
+      ORDER BY payments.id_payment DESC LIMIT 15`;
       //metters
       connection.query(paymentsQuery, async(err, resultpayments) => {
         if (err) {
@@ -313,7 +314,8 @@ exports.payments  = async (req, res) => {
       FROM ((web_accounts  
       INNER JOIN personal_accounts ON web_accounts.id_web_accounts =personal_accounts.web_account_id)
       INNER JOIN accrual ON personal_accounts.id_personal_account =accrual.personal_account_id_accrual)
-      WHERE web_accounts.id_web_accounts ='${payload.id}' AND personal_accounts.personal_account = '${curentHome}'`;
+      WHERE web_accounts.id_web_accounts ='${payload.id}' AND personal_accounts.personal_account = '${curentHome}'
+      ORDER BY accrual.id_accrual DESC LIMIT 15`;
       //metters
       connection.query(accuralsQuery, async(err, resultaccurals) => {
         if (err) {

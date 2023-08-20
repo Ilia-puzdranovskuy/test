@@ -32,6 +32,9 @@ router.get("/about",(req,res)=>{
     res.render('pages/about');
 })
 
+router.get("/publichna-oferta",(req,res)=>{
+    res.render('pages/public_oferta');
+})
 
 
 

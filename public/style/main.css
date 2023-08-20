@@ -477,7 +477,12 @@ hr{
     grid-column-gap: 20px;
     grid-row-gap: 20px;
   }
-
+  .tlhiden{
+    display: none;
+  }
+  .socialNetwoksImage{
+    display: block;
+  }
   @media only screen and  (max-width: 449px){
     #header-btn{
 
@@ -489,8 +494,23 @@ hr{
     .headerTop{
       padding: 2px
     }
+    .headerTop{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
     .headerTop span{
-      font-size: 6px;
+      margin: 6px;
+      font-size: 12px;
+    }
+    .tlhiden{
+      display: block;
+    }
+    .socialNetwoksImage{
+      display: none;
+    }
+    .headerTop{
+      height: auto;
     }
     .main-imag-with-text-container{
       height: 53vh;
@@ -499,6 +519,7 @@ hr{
       height: 20px;
       width: 20px;
     }
+
     .logo{
       display: none;
     }
@@ -620,12 +641,21 @@ hr{
       margin: 4% 2.5%;
       height: 80%;
      }
-  
-     .footer-end a{
-      display: none;
+     .footer-end {
+      display: flex;
+      flex-direction: column;
      }
      .footer-end span{
-      font-size: 10px;
+      font-size: 13px;
+      margin-left: 0;
+     }
+     .navbar-toggler{
+      height: 35px;
+      width: 60px;
+     }
+     .navbar-toggler-icon{
+      height: 24px;
+      width: 24px;
      }
 
      .main-news-short p{
@@ -687,9 +717,15 @@ hr{
   }
 
   @media only screen and (min-width: 450px) and (max-width: 599px) {
-    #header-btn{
+    .navbar-toggler{
+      height: 35px;
+      width: 60px;
+     }
+     .navbar-toggler-icon{
+      height: 24px;
+      width: 24px;
+     }
 
-    }
     .main-imag-with-text-container{
       height: 53vh;
     }
@@ -725,9 +761,21 @@ hr{
      .persAc-main-container{
       width: 98%;
      }
-     header span{
-      font-size: 8px;
-     }
+     .headerTop{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .headerTop span{
+      margin: 6px;
+      font-size: 12px;
+    }
+    .tlhiden{
+      display: block;
+    }
+    .socialNetwoksImage{
+      display: none;
+    }
      .grid-all-news {
       grid-template-columns: repeat(1, 1fr);
       margin: auto;
@@ -851,6 +899,15 @@ hr{
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
 @media only screen and (min-width: 600px) and (max-width: 767px){
+  .navbar-toggler{
+    height: 35px;
+    width: 60px;
+   }
+   .navbar-toggler-icon{
+    height: 24px;
+    width: 24px;
+   }
+
   .logo{
     display: none;
   }
