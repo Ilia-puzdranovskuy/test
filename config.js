@@ -28,7 +28,7 @@ databaseDB : 'municipal_enterprise',
 // userDB    : 'user',
 // passwordDB : '1q2w3e4r5t6y',
 // databaseDB : 'municipal_enterprise',
-
+// telBotToken:'6261809451:AAHyqJuA8CU4I1IEdmkw_n2jr-5XHM8kz2E',
 
 //ipconnect-hosting
 // hostDB     : 'localhost',
