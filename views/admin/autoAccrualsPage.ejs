@@ -13,9 +13,10 @@
 
         <form method="post" onsubmit="return confirm('Ви впевнені, що хочете очистити маркування?')" action="/admin-panel-controll/auto-accurals-clear-marks"><button type="submit" class="btn btn-danger">Очистити маркування для нарахувань</button></form>
       
-        <form method="post" onsubmit="return confirm('Ви впевнені, що хочете здійснити автоматичне нарахування')" action="/admin-panel-controll//auto-accurals-post"><button type="submit" class="btn btn-danger">Автоматичне нарахуваня</button></form>
-      
-      </div>
+        <!-- <form method="post" onsubmit="return confirm('Ви впевнені, що хочете здійснити автоматичне нарахування')" action="/admin-panel-controll//auto-accurals-post"></form> -->
+          <button type="submit" onclick="if(confirm('Ви впевнені, що хочете здійснити автоматичне нарахування')) autoAccuralStart();" class="btn btn-danger">Автоматичне нарахуваня</button>
+          <div>Статус авто нарахувань: <div id="stustAuto"></div></div>
+        </div>
      
     </div>
 
@@ -29,6 +30,24 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> 
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/admin/js/scripts.js"></script>
+    <script>
+      function autoAccuralStart(){
+        $('#stustAuto').html('Оікуйте.....')
+        $.post("/admin-panel-controll//auto-accurals-post",
+        {
 
+        },
+        function(data, status){
+          alert('Нарахування завершені');
+          $('#stustAuto').html('').append(`<a id="programatically" href="" download="date.txt">Завантажити звіт</a>`)
+          
+          $("a#programatically").click(function(){
+      var now = new Date().toString();
+      this.href = "data:text/plain;charset=UTF-8,"  + encodeURIComponent(data);
+      });
+        })
+      }
+ 
+    </script>
 </body>
 </html>
