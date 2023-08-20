@@ -1,7 +1,7 @@
 const config = require('../config');
 let uniquID = require('generate-unique-id');
 let jwt = require("jsonwebtoken");
-
+let Base64 =require('js-base64')
 var buffer = require('buffer/').Buffer;
 let LiqPay = require('../liqpay/liqpay');
 const { private_liqpay, pulic_liqpay } = require('../config');
@@ -13,7 +13,7 @@ exports.newLiqPayPayment  = async (req, res) => {
     if(await toString(liqpay.str_to_sign(private_liqpay+req.body.data+pulic_liqpay))===toString(req.body.signature)){
       console.log('////////////////////////');
 
-      let buf = buffer.from(req.body.data, 'base64').toString('ascii');
+      let buf =await Base64.decode( req.body.data);
       let parsedata;
       setTimeout(async () => {
         parsedata = await JSON.parse(buf);

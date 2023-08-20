@@ -2,6 +2,8 @@ const config = require('./config');
 let uniquID = require('generate-unique-id');
 let jwt = require("jsonwebtoken");
 var buffer = require('buffer/').Buffer;
+
+let Base64 =require('js-base64')
 let LiqPay = require('./liqpay/liqpay');
 const { private_liqpay, pulic_liqpay } = require('./config');
 var liqpay = new LiqPay(config.pulic_liqpay, config.private_liqpay);
@@ -16,7 +18,7 @@ console.log('////////////////////////');
 if(toString(liqpay.str_to_sign(private_liqpay+body.data+pulic_liqpay))===toString(body.signature)){
   console.log('////////////////////////');
 //   console.log(Buffer.from(body.data).toString('base64'))
-console.log(JSON.parse(buffer.from(body.data, 'base64').toString('ascii')).status)
+console.log(JSON.parse(Base64.decode( body.data)).status)
 }else{
 console.log('fail')
 }
