@@ -1299,7 +1299,12 @@ hr{
    }
 
    @media only screen and  (max-height: 900px) {
+    .singin-main-text-container {
+      height: auto;
+    }
    .footer-mobile{
     position: relative !important;
    }
   }
+
+  
