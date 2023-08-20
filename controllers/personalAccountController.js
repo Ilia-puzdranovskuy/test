@@ -73,7 +73,7 @@ exports.entry = async (req, res) => {
               return;
           }
           let parseResNews = JSON.parse(JSON.stringify(result));
-          console.log(Number(parseRes.balance))
+          console.log(parseRes.balance)
           if(Number(parseRes.balance)<0){
             let idpay = uniquID();
             let html =await liqpay.cnb_form({
