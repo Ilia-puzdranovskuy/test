@@ -30,10 +30,13 @@
                 <td><input placeholder="Кількість людей" id="numPRub" onchange="sumRubish()" required name="numP" type="number" value="<%=persAcAndTrifs[0].number_of_people%>" ></td>
                   <% if(persAcAndTrifs[0].type!= undefined){ %>
                     <% if(persAcAndTrifs[0].type==1){ %>
-                      <td>Юрид <input   required  name="typeAc"  value="<%=persAcAndTrifs[0].type%>" style="display: none;"></td>
+                      <td>1 <input   required  name="typeAc"  value="<%=persAcAndTrifs[0].type%>" style="display: none;"></td>
                     <% }%>
                     <% if(persAcAndTrifs[0].type==2){ %>
-                      <td>ФОП <input   required  name="typeAc"  value="<%=persAcAndTrifs[0].type%>" style="display: none;"></td>
+                      <td>2 <input   required  name="typeAc"  value="<%=persAcAndTrifs[0].type%>" style="display: none;"></td>
+                    <% }%>
+                    <% if(persAcAndTrifs[0].type==3){ %>
+                      <td>3 <input   required  name="typeAc"  value="<%=persAcAndTrifs[0].type%>" style="display: none;"></td>
                     <% }%>
                   <% }else{ %>
                     <td>Невідомо</td>
@@ -53,35 +56,75 @@
         <% for(var i=0; i < meters.length; i++) { %>
         <div class="block-bg mw-100">
           <div class="p-1 text-danger"><h5>Здійснити ручне нарахуванняза за водопостачання</h5></div>
-          <form method="post" action="/admin-panel-controll/new-hand-accural-rubbish?persAcId=<%=persAcId%>">
+          <form method="post" action="/admin-panel-controll/new-hand-accural-water?persAcId=<%=persAcId%>">
             <table class="search-result-table">
               <thead>
                 <tr>
+                  <th>Особ.рах</th>
+                  <th>Id.ліч</th>
                   <th>Марка.ліч</th>
                   <th>Сер.номер</th>
                   <th>Статус</th>
+                  <th>Тип рахунку</th>
                   <th>Тариф</th>
                   <th>Остан.показ</th>
-                  <th>Дата ост.показ.</th>>
+                  <th>Дата ост.показ.</th>
+                  <th>Новий показ.</th>
+                  <th>Споживання</th>
+                  <th>Сумма</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td><%=persAcAndTrifs[0].personal_account%></td>
-                  <td><input placeholder="Кількість людей" id="numPRub" onchange="sumRubish()" required name="numP" type="number" value="<%=persAcAndTrifs[0].number_of_people%>" ></td>
+                  <% if(meters[i].id_meters!= undefined){ %>
+                    <td><input name="meterId" value="<%=meters[i].id_meters%>" style="display: none;"><%=meters[i].id_meters%></td>
+                  <% }else{ %>
+                    <td>Невідомо</td>
+                  <% } %>
+                  <% if(meters[i].brand!= undefined){ %>
+                    <td><%=meters[i].brand%></td>
+                  <% }else{ %>
+                    <td>Невідомо</td>
+                  <% } %>
+                  <% if(meters[i].serial_number!= undefined){ %>
+                    <td><%=meters[i].serial_number%></td>
+                  <% }else{ %>
+                    <td>Невідомо</td>
+                  <% } %>
+                  <% if(meters[i].status!= undefined){ %>
+                    <td><%=meters[i].status%></td>
+                  <% }else{ %>
+                    <td>Невідомо</td>
+                  <% } %>
                     <% if(persAcAndTrifs[0].type!= undefined){ %>
                       <% if(persAcAndTrifs[0].type==1){ %>
-                        <td>Юрид <input   required  name="typeAc"  value="<%=persAcAndTrifs[0].type%>" style="display: none;"></td>
+                        <td>1 <input   required  name="typeAc"  value="<%=persAcAndTrifs[0].type%>" style="display: none;"></td>
                       <% }%>
                       <% if(persAcAndTrifs[0].type==2){ %>
-                        <td>ФОП <input   required  name="typeAc"  value="<%=persAcAndTrifs[0].type%>" style="display: none;"></td>
+                        <td>2 <input   required  name="typeAc"  value="<%=persAcAndTrifs[0].type%>" style="display: none;"></td>
+                      <% }%>
+                      <% if(persAcAndTrifs[0].type==3){ %>
+                        <td>3 <input   required  name="typeAc"  value="<%=persAcAndTrifs[0].type%>" style="display: none;"></td>
                       <% }%>
                     <% }else{ %>
                       <td>Невідомо</td>
                     <% } %>
-                  <td><input placeholder="Тариф"  required id="tarifRub" onchange="sumRubish()" name="tarif" type="number" value="<%=persAcAndTrifs[0].rubbish%>" step="any"></td>
-                  <td><input placeholder="Cумма"  required id="sumRub" name="sum" type="number"   step="any" ></td>
+                    <td><input placeholder="Тариф"  required   name="tarif" type="number" value="<%=persAcAndTrifs[0].water%>" step="any"></td>
+                    <% if(meters[i].last_readinng!= undefined){ %>
+                      <td class="lastRead"><input name="lastRead"  value="<%=meters[i].last_readinng%>"></td>
+                    <% }else{ %>
+                      <td>Невідомо</td>
+                    <% } %>
+                    <% if(meters[i].last_readinng_date!= undefined){ %>
+                      <td><%=moment(  meters[i].last_readinng_date).format("YYYY-MM-D")%></td>
+                    <% }else{ %>
+                      <td>Невідомо</td>
+                    <% } %>
+                    <td><input placeholder="Нові показники"  required class="newRead" name="newRead" type="number" onkeypress="return event.keyCode != 13;"   ></td>
+                    <td><input placeholder="Споживання"  required class="spoh" name="spoh" type="number"    ></td>
+                  <td><input placeholder="Cумма"  required  name="sum" class="sumWater" type="number"   step="any" ></td>
                   <td><button type="submit" class="btn btn-dark">Зберегти</button></td>
                 </tr>
               </tbody>
@@ -96,13 +139,13 @@
 
         <div class="block-bg mw-100">
           <div class="p-1 text-danger"><h5>Здійснити ручне нарахуванняза за водовідведення</h5></div>
-          <form method="post" action="/admin-panel-controll/new-hand-accural-rubbish?persAcId=<%=persAcId%>">
+          <form method="post" action="/admin-panel-controll/new-hand-accural-drinage?persAcId=<%=persAcId%>">
             <table class="search-result-table">
               <thead>
                 <tr>
                   <th>Особ.рах</th>
-                  <th>Кількість людей</th>
                   <th>Тип рахунку</th>
+                  <th>Споживання</th>
                   <th>Тариф</th>
                   <th>Сумма</th>
                   <th></th>
@@ -111,20 +154,25 @@
               <tbody>
                 <tr>
                   <td><%=persAcAndTrifs[0].personal_account%></td>
-                  <td><input placeholder="Кількість людей" id="numPRub" onchange="sumRubish()" required name="numP" type="number" value="<%=persAcAndTrifs[0].number_of_people%>" ></td>
+
                     <% if(persAcAndTrifs[0].type!= undefined){ %>
                       <% if(persAcAndTrifs[0].type==1){ %>
-                        <td>Юрид <input   required  name="typeAc"  value="<%=persAcAndTrifs[0].type%>" style="display: none;"></td>
+                        <td>1<input   required  name="typeAc"  value="<%=persAcAndTrifs[0].type%>" style="display: none;"></td>
                       <% }%>
                       <% if(persAcAndTrifs[0].type==2){ %>
-                        <td>ФОП <input   required  name="typeAc"  value="<%=persAcAndTrifs[0].type%>" style="display: none;"></td>
+                        <td>2 <input   required  name="typeAc"  value="<%=persAcAndTrifs[0].type%>" style="display: none;"></td>
+                      <% }%>
+                      <% if(persAcAndTrifs[0].type==3){ %>
+                        <td>3 <input   required  name="typeAc"  value="<%=persAcAndTrifs[0].type%>" style="display: none;"></td>
                       <% }%>
                     <% }else{ %> 
                       <td>Невідомо</td>
                     <% } %>
-                  <td><input placeholder="Тариф"  required id="tarifRub" onchange="sumRubish()" name="tarif" type="number" value="<%=persAcAndTrifs[0].rubbish%>" step="any"></td>
-                  <td><input placeholder="Cумма"  required id="sumRub" name="sum" type="number"   step="any" ></td>
-                  <td><button type="submit" class="btn btn-dark">Зберегти</button></td>
+                    
+                    <td><input placeholder="Cпоживання" onchange="sumDr()" onkeypress="return event.keyCode != 13;"  required id="spohDr"  name="spoh" type="number"  step="any"></td>
+                    <td><input placeholder="Тариф"  required id="tafrifDr"  name="tarif" type="number" value="<%=persAcAndTrifs[0].drainage%>" step="any"></td>
+                    <td><input placeholder="Cума"  required id="sumDrin"  name="sum" type="number"  step="any"></td>
+                    <td><button type="submit" class="btn btn-dark">Зберегти</button></td>
                 </tr>
               </tbody>
               </table>
@@ -142,19 +190,17 @@
           <thead>
             <tr>
               <th>ID-нарах.</th>
-              <th>За послугу</th>
               <th>Дата</th>
               <th>Початковий показник</th>
               <th>Кінцевий показник</th>
-              <th>Спожив. води</th>
-              <th>Нарах. вода</th>
-              <th>Спожив. водовідвед.</th>
-              <th>Нарах. водовідвед.</th>
+              <th>Послуга</th>
+              <th>Споживання</th>
+              <th>Тариф</th>
               <th>Кільк.людей</th>
-              <th>Нарах. вивізсм.</th>
-              <th>Сума</th>
-              <th>Тип особ.рах</th>
-              <th>Автор нарах.</th>
+              <th>Сумма</th>
+              <th>Тип.рах</th>
+              <th>Автор</th>
+              <th>Тип</th>
             </tr>
           </thead>
           <tbody>
@@ -167,61 +213,43 @@
                   <td>Невідомо</td>
                 <% } %>
 
-                <% if(accurals[i].type!= undefined){ %>
-                  <td><%=accurals[i].type%></td>
-                <% }else{ %>
-                  <td>Невідомо</td>
-                <% } %>
-
                 <% if(accurals[i].date!= undefined){ %>
                   <td><%=moment(  accurals[i].date).format("YYYY-MM-D")%></td>
                 <% }else{ %>
                   <td>Невідомо</td>
                 <% } %>
 
-                <% if(accurals[i].reading!= undefined){ %>
-                  <td>
-                    Показник: <%= accurals[i].reading %><br>
-                    Дата: <%=moment(  accurals[i].reading_date).format("YYYY-MM-D")%><br>
-                    Джерело: <%= accurals[i].source %>
-                  </td>
+                <% if(accurals[i].previous_reading!= undefined){ %>
+                  <td><%=accurals[i].previous_reading%></td>
                 <% }else{ %>
                   <td>Невідомо</td>
                 <% } %>
 
-                <% if(accurals[i].reading!= undefined){ %>
-                  <td>
-                    Показник: <%= accurals[i].reading %><br>
-                    Дата: <%=moment(  accurals[i].reading_date).format("YYYY-MM-D")%><br>
-                    Джерело: <%= accurals[i].source %>
-                  </td>
+                <% if(accurals[i].curent_reading!= undefined){ %>
+                  <td><%=accurals[i].curent_reading%></td>
                 <% }else{ %>
                   <td>Невідомо</td>
                 <% } %>
 
-                <% if(accurals[i].consumption_water!= undefined){ %>
-                  <td><%= accurals[i].consumption_water %></td>
+                <% if(accurals[i].service!= undefined){ %>
+                  <td><%= accurals[i].service %></td>
                 <% }else{ %>
                   <td>Невідомо</td>
                 <% } %>
 
-                <% if(accurals[i].accrual_water!= undefined){ %>
-                  <td><%= accurals[i].accrual_water %></td>
+                <% if(accurals[i].consumption!= undefined){ %>
+                  <td><%= accurals[i].consumption %></td>
                 <% }else{ %>
                   <td>Невідомо</td>
                 <% } %>
 
-                <% if(accurals[i].consumption_drainage!= undefined){ %>
-                  <td><%= accurals[i].consumption_drainage %></td>
+                <% if(accurals[i].tarif!= undefined){ %>
+                  <td><%= accurals[i].tarif %></td>
                 <% }else{ %>
                   <td>Невідомо</td>
                 <% } %>
 
-                <% if(accurals[i].accrual_drainage!= undefined){ %>
-                  <td><%= accurals[i].accrual_drainage %></td>
-                <% }else{ %>
-                  <td>Невідомо</td>
-                <% } %>
+               
 
                 <% if(accurals[i].num_people!= undefined){ %>
                   <td><%= accurals[i].num_people %></td>
@@ -229,26 +257,27 @@
                   <td>Невідомо</td>
                 <% } %>
 
-                <% if(accurals[i].accrual_rubbish!= undefined){ %>
-                  <td><%= accurals[i].accrual_rubbish %></td>
+
+                <% if(accurals[i].accural_sum!= undefined){ %>
+                  <td><%= accurals[i].accural_sum %></td>
                 <% }else{ %>
                   <td>Невідомо</td>
                 <% } %>
 
-                <% if(accurals[i].sum!= undefined){ %>
-                  <td><%= accurals[i].sum %></td>
+                <% if(accurals[i].personal_account_type!= undefined){ %>
+                  <td><%= accurals[i].personal_account_type %></td>
                 <% }else{ %>
                   <td>Невідомо</td>
-                <% } %>
-
-                <% if(accurals[i].personal_account_type== "1"){ %>
-                  <td>Юрид</td>
-                <% }else{ %>
-                  <td>ФОП</td>
                 <% } %>
 
                 <% if(accurals[i].author_create!= undefined){ %>
                   <td><%= accurals[i].author_create %></td>
+                <% }else{ %>
+                  <td>Невідомо</td>
+                <% } %>
+
+                <% if(accurals[i].type!= undefined){ %>
+                  <td><%= accurals[i].type %></td>
                 <% }else{ %>
                   <td>Невідомо</td>
                 <% } %>

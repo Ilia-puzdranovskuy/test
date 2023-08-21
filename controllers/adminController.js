@@ -1528,7 +1528,7 @@ exports.handAccrual= async (req, res) => {
             return;
         }
         let parseResultAccurals = JSON.parse(JSON.stringify(resultAccurals));
-        console.log(parseResultAccurals)
+        // console.log(parseResultAccurals)
         ////////
         let querypersAcAndTarifs = `SELECT personal_accounts.personal_account,personal_accounts.type, personal_accounts.services, personal_accounts.number_of_people, tarifs.*
         FROM personal_accounts
@@ -1546,15 +1546,14 @@ exports.handAccrual= async (req, res) => {
             let queryMeters = `SELECT meters.*
             FROM personal_accounts
             INNER JOIN meters ON meters.personal_account_id = personal_accounts.id_personal_account
-            WHERE personal_accounts.id_personal_account = '${req.query['pers-ac-id']}'
+            WHERE personal_accounts.id_personal_account = '${req.query['pers-ac-id']}' AND meters.status!='Неактивний'
             ORDER BY meters.id_meters ASC`;
             connection.query(queryMeters, async(err, resultMeters) => {
                 if (err) {
                     console.log("internal error", err);
                     return;
                 }
-                let parseResultMeters = JSON.parse(JSON.stringify(resultMeters));
-
+                let parseResultMeters = JSON.parse(JSON.stringify( resultMeters));
                 res.render('admin/HandAccuralsPage',{errors:errors, persAcId: req.query['pers-ac-id'],accurals:parseResultAccurals,persAcAndTrifs:parseResultPersAcAndTrifs,meters:parseResultMeters});
             })
 
@@ -1569,16 +1568,122 @@ exports.newHandAccuralRubbish= async (req, res) => {
     }
     let errors = '';
     let user = jwt.verify(req.cookies.admintoken, config.admin_secret);
-  
-    let query= `INSERT INTO accrual (personal_account_id_accrual, date, accrual_rubbish, sum, personal_account_type, author_create,type,tarifl_rubbish, num_people)
-    VALUES ('${req.query.persAcId}','${formatDate(new Date)}','${req.body.sum}','${req.body.sum}','${req.body.typeAc}','${user.name}','${'Сміття'}','${req.body.tarif}' ,'${req.body.numP}')`;
-    connection.query(query, async(err, result) => {
+    console.log(req.body)
+    let persAc = req.query.persAcId
+    let queryNewAcuralRubbish= `INSERT INTO accrual (personal_account_id_accrual, date, service, num_people,
+        tarif,accural_sum,personal_account_type,author_create,type)
+        VALUES ('${persAc}', '${formatDate(new Date)}', '${"Вивізсміття"}', '${req.body.numP}',
+        '${req.body.tarif}','${req.body.sum}',
+        '${req.body.typeAc}','${user.name}','${"Руч"}');`;
+     await connection.query(queryNewAcuralRubbish, async(err, result) => {
         if (err) {
             console.log("internal error", err);
             return;
         }
+        let updateBalance = 
+                    `UPDATE personal_accounts
+                    SET balance = balance - '${Number(req.body.sum)}'
+                    WHERE id_personal_account = '${persAc}'`;
+                    await connection.query(updateBalance, async(err, result) => {
+                    if (err) {
+                        console.log("internal error", err);
+                        return;
+                    }
+                 
+                res.redirect(`/admin-panel-controll/accurals?pers-ac-id=${req.query.persAcId}`)
+        });
     });
-    res.redirect(`/admin-panel-controll/accurals?pers-ac-id=${req.query.persAcId}`)
+    
+}
+
+exports.newHandAccuralWater= async (req, res) => {
+    if(isAuth(req,res)){
+        return
+    }
+    let errors = '';
+    let user = jwt.verify(req.cookies.admintoken, config.admin_secret);
+    console.log(req.body)
+    let persAc = req.query.persAcId
+    let queryNewAccuralWatherbyLastCalculated = `INSERT INTO accrual (personal_account_id_accrual, date, service, previous_reading, curent_reading, consumption,
+        tarif, accural_sum, personal_account_type, author_create, type)
+        VALUES ('${persAc}', '${formatDate(new Date)}', '${"Водопостачання"}','${req.body.lastRead}'
+        ,'${req.body.newRead}', '${req.body.spoh}', '${req.body.tarif}','${req.body.sum}',
+        '${req.body.typeAc}','${user.name}','${"Руч"}');`;
+        await connection.query(queryNewAccuralWatherbyLastCalculated, async(err, resultNewAccuralWatherbyLastCalculated) => {
+            if (err) {
+                console.log("internal error", err);
+                return;
+            }
+        let updateBalance = 
+                    `UPDATE personal_accounts
+                    SET balance = balance - '${Number(req.body.sum)}'
+                    WHERE id_personal_account = '${persAc}'`;
+                    await connection.query(updateBalance, async(err, result) => {
+                    if (err) {
+                        console.log("internal error", err);
+                        return;
+                    }
+                    let queryUpdateMeter=`UPDATE meters
+                    SET last_readinng = '${req.body.newRead}', last_readinng_date = '${formatDate( new Date())}'
+                    WHERE id_meters ='${req.body.meterId}'`;
+                        connection.query(queryUpdateMeter, async(err, resultlastRead) => {
+                            if (err) {
+                                console.log("internal error", err);
+                                return 
+                            }
+                            let queryCalculateAllReadingsByMeter= `UPDATE readings
+                            SET calculated = 1, calculated_date = '${formatDate(new Date)}'
+                            WHERE readings.id_meter_reading =${req.body.meterId} AND readings.calculated =0`;
+                        await connection.query(queryCalculateAllReadingsByMeter, async(err, resultCalculateAllReadingsByMeter) => {
+                                if (err) {
+                                    console.log("internal error", err);
+                                    return;
+                                }
+                                
+                                res.redirect(`/admin-panel-controll/accurals?pers-ac-id=${req.query.persAcId}`)
+                    });
+                           
+                })
+                    
+        });
+    });
+    
+}
+
+
+
+exports.newHandAccuralDrinage= async (req, res) => {
+    if(isAuth(req,res)){
+        return
+    }
+    let errors = '';
+    let user = jwt.verify(req.cookies.admintoken, config.admin_secret);
+    console.log(req.body)
+    let persAc = req.query.persAcId
+    let queryNewAcuralRubbish= `INSERT INTO accrual (personal_account_id_accrual, date, service, consumption,
+        tarif,accural_sum,personal_account_type,author_create,type)
+        VALUES ('${persAc}', '${formatDate(new Date)}', '${"Водовідведення"}', '${req.body.spoh}',
+        '${req.body.tarif}','${req.body.sum}',
+        '${req.body.typeAc}','${user.name}','${"Руч"}');`;
+     await connection.query(queryNewAcuralRubbish, async(err, result) => {
+        if (err) {
+            console.log("internal error", err);
+            return;
+        }
+        let updateBalance = 
+                    `UPDATE personal_accounts
+                    SET balance = balance - '${Number(req.body.sum)}'
+                    WHERE id_personal_account = '${persAc}'`;
+                    await connection.query(updateBalance, async(err, result) => {
+                    if (err) {
+                        console.log("internal error", err);
+                        return;
+                    }
+                 
+                res.redirect(`/admin-panel-controll/accurals?pers-ac-id=${req.query.persAcId}`)
+        });
+    });
+    
 }
 
 

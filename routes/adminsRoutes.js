@@ -76,6 +76,11 @@ router.post("/audit-readings-post",adminController.auditReadingsPost);
 
 router.get("/accurals",adminController.handAccrual);
 router.post("/new-hand-accural-rubbish",adminController.newHandAccuralRubbish);
+router.post("/new-hand-accural-water",adminController.newHandAccuralWater);
+router.post("/new-hand-accural-drinage",adminController.newHandAccuralDrinage);
+
+
+
 
 router.get("/auto-accurals",adminController.autoAccruals);
 router.post("/auto-accural-check",adminController.autoAccrualsCheckPost);
